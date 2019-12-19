@@ -1,13 +1,23 @@
 package com.aaa.lee.app.model;
 
-import com.aaa.lee.app.base.BaseModel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Accessors(chain = true)
 @Table(name = "ums_member_statistics_info")
-public class MemberStatisticsInfo extends BaseModel {
+public class MemberStatisticsInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,15 +1,25 @@
 package com.aaa.lee.app.model;
 
-import com.aaa.lee.app.base.BaseModel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Accessors(chain = true)
 @Table(name = "ums_shop_questionnaire_answer")
-public class ShopQuestionnaireAnswer extends BaseModel {
+public class ShopQuestionnaireAnswer implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

@@ -30,4 +30,5 @@ public interface IRepastService {
     @PostMapping("/doLogin")
     Boolean doLogin(@RequestBody Member member);
 
+
 }

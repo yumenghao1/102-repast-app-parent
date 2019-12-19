@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>102-repast-app-userinfo-consumer-6081</module>
+        <module>102-repast-app-order-consumer-6789</module>
     </modules>
 
     <dependencies>

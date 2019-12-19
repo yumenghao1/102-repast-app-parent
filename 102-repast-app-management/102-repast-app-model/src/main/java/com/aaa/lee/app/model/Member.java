@@ -3,38 +3,22 @@ package com.aaa.lee.app.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author Seven Lee
- * @description
- *      @Table(name = "ums_member")
- *      @Id
- *      JPA:因为hibernate自带这些注解
- *      和数据库表进行映射
- * @param
- * @date 2019/12/19
- * @return 
- * @throws 
-**/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Accessors(chain = true)
 @Table(name = "ums_member")
 public class Member implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    /*@Size(max = 200, message = "当id超过数据库最大值的时候直接会友好的提示，并不是抛出各种异常")
-    @NotNull*/
     private Long id;
 
     @Column(name = "shop_id")
@@ -152,4 +136,5 @@ public class Member implements Serializable {
      * 登录验证token
      */
     private String token;
+
 }

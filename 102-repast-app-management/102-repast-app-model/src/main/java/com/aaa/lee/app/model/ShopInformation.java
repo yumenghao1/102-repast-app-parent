@@ -1,12 +1,19 @@
 package com.aaa.lee.app.model;
 
-import com.aaa.lee.app.base.BaseModel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
 @Table(name = "ums_shop_information")
-public class ShopInformation extends BaseModel {
+public class ShopInformation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -118,5 +125,6 @@ public class ShopInformation extends BaseModel {
      */
     @Column(name = "contract_id")
     private Long contractId;
-
+    @Column(name = "shop_type")
+private String shopType;
 }
