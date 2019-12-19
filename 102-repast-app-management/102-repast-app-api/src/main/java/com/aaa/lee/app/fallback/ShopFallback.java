@@ -23,7 +23,8 @@ public class ShopFallback implements FallbackFactory<IShopApiService> {
         IShopApiService iShopApiService = new IShopApiService() {
             @Override
             public ResultData<ShopInformation> getShopByShopType(String shopType) {
-                return null;
+
+                return new ResultData<ShopInformation>().setMsg("调用店铺熔断成功");
             }
         };
         return iShopApiService;
