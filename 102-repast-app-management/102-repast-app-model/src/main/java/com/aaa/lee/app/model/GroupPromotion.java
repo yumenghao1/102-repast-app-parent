@@ -1,0 +1,80 @@
+package com.aaa.lee.app.model;
+
+import com.aaa.lee.app.base.BaseModel;
+
+import javax.persistence.*;
+import java.util.Date;
+
+@Table(name = "sms_group_promotion")
+public class GroupPromotion extends BaseModel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "shop_id")
+    private Long shopId;
+
+    private String title;
+
+    /**
+     * 团购活动的图片
+     */
+    private String images;
+
+    /**
+     * 开始日期
+     */
+    @Column(name = "start_date")
+    private Date startDate;
+
+    /**
+     * 结束日期
+     */
+    @Column(name = "end_date")
+    private Date endDate;
+
+    /**
+     * 上下线状态
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "create_time")
+    private Date createTime;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * n人团
+     */
+    private Byte type;
+
+    /**
+     * 未成团，自动延期n天
+     */
+    @Column(name = "auto_delay")
+    private Integer autoDelay;
+
+    /**
+     * 团购价格
+     */
+    private Long price;
+
+    /**
+     * 原价
+     */
+    @Column(name = "original_price")
+    private Long originalPrice;
+
+    /**
+     * 1是自动成团，拼团时间到，不管人数是否到，自动开团
+     */
+    @Column(name = "auto_open")
+    private Byte autoOpen;
+
+}
