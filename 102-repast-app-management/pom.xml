@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>102-repast-app-parent</artifactId>
+        <groupId>com.aaa.lee.repast</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>102-repast-app-management</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>102-repast-app-model</module>
+        <module>102-repast-app-mapper</module>
+        <module>102-repast-app-service</module>
+        <module>102-repast-app-api</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.aaa.lee.repast</groupId>
+            <artifactId>102-repast-app-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+
+</project>
