@@ -32,7 +32,7 @@ public class CheckOutTokenAspect {
     @Around("token()")
     public Object doToken(ProceedingJoinPoint joinPoint) throws Throwable {
         Object proceed = null;
-            if (StringUtil.isNotEmpty((String) joinPoint.getArgs()[1])) {
+            if (StringUtil.isNotEmpty((String) joinPoint.getArgs()[0])) {
                 proceed = joinPoint.proceed();
                 return proceed;
             } else {

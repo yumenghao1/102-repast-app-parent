@@ -4,6 +4,7 @@ import com.aaa.lee.app.base.BaseController;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.service.CartService;
+import com.aaa.lee.app.status.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,13 +26,15 @@ public class CartController extends BaseController {
      * @return
      */
     @PostMapping("/addProductToCart")
-    public ResultData<CartItem> addProductToCart(@RequestBody CartItem cartItem, @RequestParam("token") String token) {
-        boolean status = cartService.addProductToCart(cartItem, token);
-        if (status) {
-            return success("测试购物车token成功");
-        } else {
-            return failed("测试购物车token失败");
+    public ResultData addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock") Long stock) {
+        boolean b = cartService.addProductToCart(cartItem, stock);
+        if (b) {
+            ResultData success = super.success(StatusEnum.SUCCESS.getMsg());
+            return success;
+
         }
+        ResultData failed = super.failed(StatusEnum.FAILED.getMsg());
+        return failed;
     }
 
 

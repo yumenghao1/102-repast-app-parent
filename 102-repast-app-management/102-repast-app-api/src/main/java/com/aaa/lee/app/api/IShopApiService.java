@@ -2,7 +2,6 @@ package com.aaa.lee.app.api;
 
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.fallback.ShopFallback;
-import com.aaa.lee.app.model.ShopInformation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +25,11 @@ public interface IShopApiService {
      * @date 2019/12/19
      **/
     @GetMapping("/getShopByShopType")
-    ResultData<ShopInformation> getShopByShopType(@RequestParam("shopType") String shopType,@RequestParam("token") String token);
+    ResultData getShopByShopType(@RequestParam("token") String token, @RequestParam("shopType") String shopType);
 
+    @GetMapping("/getProductStockById")
+    Long getProductStockById();
 
+    @GetMapping("/updateProductStock")
+    ResultData updateProductStock(@RequestParam("productId")Long productId);
 }
