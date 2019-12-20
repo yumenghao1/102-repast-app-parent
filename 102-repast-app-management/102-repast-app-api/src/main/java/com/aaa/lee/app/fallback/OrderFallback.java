@@ -21,7 +21,12 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
         return new IOrderApiService() {
             @Override
             public ResultData addProductToCart(String token, CartItem cartItem, Long stock) {
-                return new ResultData().setMsg("调用订单熔断成功");
+                return new ResultData().setMsg("添加购物车商品报错熔断成功");
+            }
+
+            @Override
+            public ResultData reduceProductToCart(String token, CartItem cartItem) {
+                return new ResultData().setMsg("减少购物车商品报错熔断成功");
             }
         };
     }

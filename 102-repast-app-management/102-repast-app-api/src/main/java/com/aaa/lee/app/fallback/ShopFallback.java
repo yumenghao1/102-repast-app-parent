@@ -32,7 +32,7 @@ public class ShopFallback implements FallbackFactory<IShopApiService> {
 
             @Override
             public ResultData updateProductStock(Long productId) {
-                return new ResultData().setMsg("减少库存成功熔断成功");
+                return new ResultData().setMsg("减少库存成功熔断成功").setCode("200");
             }
         };
         return iShopApiService;

@@ -29,12 +29,20 @@ public class CartController extends BaseController {
     public ResultData addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock") Long stock) {
         boolean b = cartService.addProductToCart(cartItem, stock);
         if (b) {
-            ResultData success = super.success(StatusEnum.SUCCESS.getMsg());
-            return success;
+            return super.success(StatusEnum.SUCCESS.getMsg());
+        }
+        return super.failed(StatusEnum.FAILED.getMsg());
+    }
+
+    @PostMapping("/reduceProductToCart")
+    public ResultData reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem) {
+        ResultData resultData = cartService.reduceProductToCart(cartItem);
+        if (resultData.getCode().equals(StatusEnum.SUCCESS.getCode())) {
+            return super.success(resultData.getData(), StatusEnum.SUCCESS.getMsg());
+        } else {
+            return super.failed(StatusEnum.FAILED.getMsg());
 
         }
-        ResultData failed = super.failed(StatusEnum.FAILED.getMsg());
-        return failed;
     }
 
 

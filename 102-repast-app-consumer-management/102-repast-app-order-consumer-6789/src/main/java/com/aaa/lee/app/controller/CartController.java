@@ -5,15 +5,12 @@ import com.aaa.lee.app.api.IShopApiService;
 import com.aaa.lee.app.base.BaseController;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
-import com.aaa.lee.app.model.ShopInformation;
 import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.status.StatusEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -38,11 +35,39 @@ public class CartController extends BaseController {
     public ResultData addProductToCart(String token, CartItem cartItem) {
         ResultData cartItemResultData = iOrderApiService.addProductToCart(token, cartItem, iShopApiService.getProductStockById());
         if (cartItemResultData.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
-            ResultData resultData = iShopApiService.updateProductStock(cartItem.getProductId());
-            return resultData;
+            return checkProductStock(cartItem);
         }
         return super.failed(StatusEnum.FAILED.getMsg());
     }
 
+    /**
+     * @param token
+     * @param cartItem 商品id 店铺id 会员id
+     * @return
+     */
+    @PostMapping("/reduceProductToCart")
+    @ApiOperation(value = "减少购物车", notes = "修改购物车内商品数量")
+    public ResultData reduceProductToCart(String token, CartItem cartItem) {
+        ResultData reduceProduct = iOrderApiService.reduceProductToCart(token, cartItem);
+        // 为true是对购物车商品减少成功，在根据resultData来判断是否对库存进行操作
+        if (reduceProduct.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode()) && (boolean) reduceProduct.getData()) {
+            return checkProductStock(cartItem);
+        }
+        return super.failed(StatusEnum.FAILED.getMsg());
+    }
 
+    /**
+     * 验证库存是否修改成功
+     *
+     * @param cartItem
+     * @return
+     */
+    private ResultData checkProductStock(CartItem cartItem) {
+        if (iShopApiService.updateProductStock(cartItem.getProductId()).getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
+            return super.success(StatusEnum.SUCCESS.getMsg());
+        } else {
+            return super.failed(StatusEnum.FAILED.getMsg());
+        }
+
+    }
 }

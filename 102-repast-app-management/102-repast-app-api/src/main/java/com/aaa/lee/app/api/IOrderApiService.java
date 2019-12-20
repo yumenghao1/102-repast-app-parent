@@ -19,5 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface IOrderApiService {
 
     @PostMapping("/addProductToCart")
-    ResultData addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock")Long stock);
+    ResultData addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock") Long stock);
+
+    @PostMapping("/reduceProductToCart")
+    ResultData reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem);
 }
