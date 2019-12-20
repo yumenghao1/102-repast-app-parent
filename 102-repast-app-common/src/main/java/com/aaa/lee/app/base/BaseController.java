@@ -99,5 +99,19 @@ public class BaseController {
     }
 
     // TODO 暂时未完成，需要什么方法自己添加
-
+    /**
+     * @author Seven Lee
+     * @description
+     *      登录失败，返回系统消息
+     * @param []
+     * @date 2019/12/18
+     * @return com.aaa.lee.app.base.ResultData
+     * @throws
+     **/
+    protected ResultData failed(String msg) {
+        ResultData resultData = new ResultData();
+        resultData.setCode(LoginStatus.LOGIN_FAILED.getCode());
+        resultData.setMsg(msg);
+        return resultData;
+    }
 }

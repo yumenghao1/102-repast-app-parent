@@ -30,7 +30,7 @@ public class MemberService extends BaseService<Member> {
      * @author Seven Lee
      * @description
      *      执行登录操作
-     * @param [member]
+     * @param
      * @date 2019/12/19
      * @return java.lang.Boolean
      * @throws 

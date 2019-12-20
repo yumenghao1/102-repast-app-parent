@@ -1,20 +1,12 @@
 package com.aaa.lee.app.component;
 
-import com.aaa.lee.app.api.IOrderApiService;
-import com.aaa.lee.app.api.IRepastService;
 import com.aaa.lee.app.base.ResultData;
-import com.aaa.lee.app.model.Member;
-import com.aaa.lee.app.model.ShopInformation;
 import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.utils.StringUtil;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**

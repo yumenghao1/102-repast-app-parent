@@ -26,7 +26,7 @@ public interface IShopApiService {
      * @date 2019/12/19
      **/
     @GetMapping("/getShopByShopType")
-    ResultData<ShopInformation> getShopByShopType(@RequestParam("shopType") String shopType);
+    ResultData<ShopInformation> getShopByShopType(@RequestParam("shopType") String shopType,@RequestParam("token") String token);
 
 
 }

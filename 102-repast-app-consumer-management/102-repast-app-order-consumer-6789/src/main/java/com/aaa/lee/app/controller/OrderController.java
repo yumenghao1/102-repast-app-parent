@@ -27,8 +27,8 @@ public class OrderController extends BaseController {
     // TODO 该方法是测试方法需要调用shop接口
     @GetMapping("/getShopByShopType")
     @ApiOperation(value = "获取店铺", notes = "根据消费类型选择店铺")
-    public ResultData<ShopInformation> getShopByShopType(@RequestParam("shopType") String shopType,String token) {
-        return shopApiService.getShopByShopType(shopType);
+    public ResultData getShopByShopType(@RequestParam("shopType") String shopType,String token) {
+        return shopApiService.getShopByShopType(shopType,token);
     }
 
 }

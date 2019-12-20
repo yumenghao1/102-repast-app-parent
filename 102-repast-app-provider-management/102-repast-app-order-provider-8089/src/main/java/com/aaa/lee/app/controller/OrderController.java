@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     @GetMapping("/test")
-    String test(@RequestParam("shopType") String shopType) {
+    String test(@RequestParam("shopType") String shopType,@RequestParam("token") String token) {
         return "成功调用order-provider";
     }
-
 }

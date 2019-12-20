@@ -3,9 +3,12 @@ package com.aaa.lee.app.api;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.fallback.OrderFallback;
 import com.aaa.lee.app.fallback.ShopFallback;
+import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.ShopInformation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -18,6 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "order-interface-provider", fallbackFactory = OrderFallback.class)
 public interface IOrderApiService {
 
-
-
+    @PostMapping("/addProductToCart")
+    ResultData<CartItem> addProductToCart(@RequestBody CartItem cartItem, @RequestParam("token") String token);
 }
