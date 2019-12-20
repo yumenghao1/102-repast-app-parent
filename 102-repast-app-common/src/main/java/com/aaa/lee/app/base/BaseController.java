@@ -1,6 +1,7 @@
 package com.aaa.lee.app.base;
 
 import com.aaa.lee.app.status.LoginStatus;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
  *      也就是说以后所有的controller都不必须要继承BaseController
  **/
 @Controller
+@Order
 public class BaseController {
 
     /**

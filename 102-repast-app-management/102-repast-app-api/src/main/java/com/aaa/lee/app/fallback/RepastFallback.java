@@ -21,7 +21,7 @@ public class RepastFallback implements FallbackFactory<IRepastService> {
             @Override
             public Boolean doLogin(Member member) {
                 System.out.println("测试登录熔断数据");
-                return null;
+                return false;
             }
         };
         return repastService;
