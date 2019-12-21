@@ -11,7 +11,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 购物车order接口
@@ -57,17 +60,44 @@ public class CartController extends BaseController {
     }
 
     /**
+     * @param token
+     * @param
+     * @return
+     */
+    @PostMapping("/cleanProductToCart")
+    @ApiOperation(value = "清空购物车", notes = "清空购物车")
+    public ResultData cleanProductToCart(String token, @RequestBody List<CartItem> cartItems) {
+//        boolean b = false;
+        ResultData reduceProduct = iOrderApiService.cleanProductToCart(token, cartItems);
+        // 为true是对购物车商品清空成功，在根据resultData来判断是否对库存进行操作，被传回来的商品就是一定要对库存进行操作
+        if (reduceProduct.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
+            return iShopApiService.updateProductStock(cartItems);
+//            for (CartItem cartItem : (List<CartItem>) reduceProduct.getData()) {
+//                ResultData resultData = checkProductStock(cartItem);
+//                if (resultData.getCode() == LoginStatus.LOGIN_SUCCESS.getCode()) {
+//                    b = true;
+//                }
+//            }
+//            if (b) {
+//                return super.success(StatusEnum.SUCCESS.getMsg());
+//            }
+        }
+        return super.failed(StatusEnum.FAILED.getMsg());
+    }
+
+    /**
      * 验证库存是否修改成功
      *
      * @param cartItem
      * @return
      */
     private ResultData checkProductStock(CartItem cartItem) {
-        if (iShopApiService.updateProductStock(cartItem.getProductId()).getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
+        if (iShopApiService.updateProductStock(cartItem.getProductId(), cartItem.getQuantity()).getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
             return super.success(StatusEnum.SUCCESS.getMsg());
         } else {
             return super.failed(StatusEnum.FAILED.getMsg());
         }
-
     }
+
+
 }

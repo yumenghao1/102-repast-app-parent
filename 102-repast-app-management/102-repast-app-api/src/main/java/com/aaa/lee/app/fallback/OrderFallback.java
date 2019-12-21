@@ -6,6 +6,8 @@ import com.aaa.lee.app.model.CartItem;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @Company AAA软件教育
  * @Author Seven Lee
@@ -27,6 +29,11 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
             @Override
             public ResultData reduceProductToCart(String token, CartItem cartItem) {
                 return new ResultData().setMsg("减少购物车商品报错熔断成功");
+            }
+
+            @Override
+            public ResultData cleanProductToCart(String token, List<CartItem> cartItems) {
+                return new ResultData().setMsg("清空购物车商品报错熔断成功");
             }
         };
     }

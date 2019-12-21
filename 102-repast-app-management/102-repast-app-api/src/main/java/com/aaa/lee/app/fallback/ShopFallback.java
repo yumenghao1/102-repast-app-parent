@@ -2,9 +2,12 @@ package com.aaa.lee.app.fallback;
 
 import com.aaa.lee.app.api.IShopApiService;
 import com.aaa.lee.app.base.ResultData;
+import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.ShopInformation;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @Company AAA软件教育
@@ -31,9 +34,16 @@ public class ShopFallback implements FallbackFactory<IShopApiService> {
             }
 
             @Override
-            public ResultData updateProductStock(Long productId) {
+            public ResultData updateProductStock(Long productId, Integer stock) {
                 return new ResultData().setMsg("减少库存成功熔断成功").setCode("200");
             }
+
+            @Override
+            public ResultData updateProductStock(List<CartItem> cartItems) {
+                return new ResultData().setMsg("减少库存成功熔断成功").setCode("200");
+            }
+
+
         };
         return iShopApiService;
     }

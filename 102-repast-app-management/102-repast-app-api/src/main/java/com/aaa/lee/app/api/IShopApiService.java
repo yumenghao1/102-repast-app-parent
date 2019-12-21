@@ -2,9 +2,14 @@ package com.aaa.lee.app.api;
 
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.fallback.ShopFallback;
+import com.aaa.lee.app.model.CartItem;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @Company AAA软件教育
@@ -30,6 +35,9 @@ public interface IShopApiService {
     @GetMapping("/getProductStockById")
     Long getProductStockById();
 
-    @GetMapping("/updateProductStock")
-    ResultData updateProductStock(@RequestParam("productId")Long productId);
+    @PostMapping("/updateProductStock")
+    ResultData updateProductStock(@RequestParam("productId") Long productId, @RequestParam("stock") Integer stock);
+
+    @PostMapping("/updateProductStock")
+    ResultData updateProductStock(@RequestBody List<CartItem> cartItems);
 }

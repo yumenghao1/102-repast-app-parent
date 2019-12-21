@@ -8,6 +8,8 @@ import com.aaa.lee.app.status.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 购物车服务
  */
@@ -19,7 +21,7 @@ public class CartController extends BaseController {
     private CartService cartService;
 
     /**
-     * 加入购物车方法
+     * 购物车的增加
      *
      * @param cartItem
      * @param token
@@ -34,15 +36,33 @@ public class CartController extends BaseController {
         return super.failed(StatusEnum.FAILED.getMsg());
     }
 
+    /**
+     * 购物车的减少
+     *
+     * @param token
+     * @param cartItem
+     * @return
+     */
     @PostMapping("/reduceProductToCart")
     public ResultData reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem) {
+
         ResultData resultData = cartService.reduceProductToCart(cartItem);
         if (resultData.getCode().equals(StatusEnum.SUCCESS.getCode())) {
             return super.success(resultData.getData(), StatusEnum.SUCCESS.getMsg());
         } else {
             return super.failed(StatusEnum.FAILED.getMsg());
-
         }
+    }
+
+    /**
+     * 清空商品
+     * @param token
+     * @param cartItems
+     * @return
+     */
+    @PostMapping("/cleanProductToCart")
+    public ResultData cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems) {
+        return cartService.cleanProductToCart(cartItems);
     }
 
 

@@ -4,6 +4,7 @@ import com.aaa.lee.app.base.BaseService;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.mapper.CartItemMapper;
 import com.aaa.lee.app.model.CartItem;
+import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.status.StatusEnum;
 import com.aaa.lee.app.utils.DateUtil;
 import org.apache.commons.httpclient.util.DateParseException;
@@ -13,6 +14,7 @@ import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.entity.Example;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -96,25 +98,26 @@ public class CartService extends BaseService<CartItem> {
     public ResultData reduceProductToCart(CartItem cartItem) {
         int count = 0;
         boolean status = false;
+        ResultData resultData = new ResultData();
         // 查询该商品的数量是否为1，如果为一，修改数量并逻辑删除和修改时间,前台必须传111111111111del
         CartItem newCartItem = findByProuct(cartItem.getMemberId(), cartItem.getProductId(), cartItem.getDeleteStatus());
         // 先判断查询到没有，在判断是否为超时商品，如果为超时商品不会在操控库存
         if (null != newCartItem) {
-            status= isTimeout(newCartItem);
+            status = isTimeout(newCartItem);
             // 判断是否存在该商品在购物车的数量
-            if (newCartItem.getQuantity() == Integer.valueOf(StatusEnum.SUCCESS.getCode())) {
+            if (newCartItem.getQuantity() <= cartItem.getQuantity()) {
                 // 修改数量和状态
-                count = cartItemMapper.updateByPrimaryKey(newCartItem.setQuantity(newCartItem.getQuantity()-cartItem.getQuantity()).setDeleteStatus(Integer.valueOf(StatusEnum.FAILED.getCode())).setModifyDate(Timestamp.valueOf(DateUtil.getDateNow())));
+                count = cartItemMapper.updateByPrimaryKey(newCartItem.setQuantity(0).setDeleteStatus(Integer.valueOf(StatusEnum.FAILED.getCode())).setModifyDate(Timestamp.valueOf(DateUtil.getDateNow())));
             } else {
                 // 修改数量
-                count = cartItemMapper.updateByPrimaryKey(upDateCartItem(newCartItem,-cartItem.getQuantity()));
+                count = cartItemMapper.updateByPrimaryKey(upDateCartItem(newCartItem, -cartItem.getQuantity()));
             }
         }
         // 操作成功进行返回结果
         if (count > 0) {
-            return new ResultData().setCode(StatusEnum.SUCCESS.getCode()).setMsg(StatusEnum.SUCCESS.getMsg()).setData(status);
+            return resultData.setCode(StatusEnum.SUCCESS.getCode()).setMsg(StatusEnum.SUCCESS.getMsg()).setData(status);
         }
-        return new ResultData().setCode(StatusEnum.FAILED.getCode());
+        return resultData.setCode(StatusEnum.FAILED.getCode());
     }
 
     /**
@@ -130,11 +133,45 @@ public class CartService extends BaseService<CartItem> {
         criteria.andEqualTo("productId", newCartItem.getProductId())
                 .andEqualTo("memberId", newCartItem.getMemberId())
                 .andEqualTo("deleteStatus", newCartItem.getDeleteStatus())
-                .andBetween("modifyDate", new Timestamp(new Date().getTime() - 600000), Timestamp.valueOf(DateUtil.getDateNow()));
+                .andBetween("modifyDate", new Timestamp(System.currentTimeMillis() - 600000), Timestamp.valueOf(DateUtil.getDateNow()));
         List<CartItem> cartItems = cartItemMapper.selectByExample(example);
         if (cartItems.size() > 0) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 清空购物车
+     *
+     * @param cartItems
+     * @return
+     */
+    public ResultData cleanProductToCart(List<CartItem> cartItems) {
+        List<CartItem> newCarItems = new ArrayList<>();
+        ResultData resultData = new ResultData();
+        boolean b = true;
+        // 查询出所有购物车商品，然后判断是否为失效购物车商品，这些不是失效的商品都是必要要操控库存的
+        for (CartItem cartItem : cartItems) {
+            // 查询该商品在购物车的信息，有多少件，各种信息，做数据更新
+            cartItem = findByProuct(cartItem.getMemberId(), cartItem.getProductId(), cartItem.getDeleteStatus());
+            // 不为空然后就先把要修改库存的数据放到list中返回
+            if (null != cartItem) {
+                if (isTimeout(cartItem)) {
+                    newCarItems.add(cartItem);
+                }
+                // 逻辑删除购物车商品
+                int i = cartItemMapper.updateByPrimaryKey(cartItem.setModifyDate(Timestamp.valueOf(DateUtil.getDateNow())).setDeleteStatus(2).setQuantity(0));
+                // 设置一个为true的boolean，只有失败才会变为false
+                if (i < 0) {
+                    b = false;
+                }
+            }
+        }
+        if (b) {
+            return resultData.setCode(LoginStatus.LOGIN_SUCCESS.getCode()).setMsg(StatusEnum.SUCCESS.getMsg()).setData(newCarItems);
+        } else {
+            return resultData.setCode(LoginStatus.LOGIN_FAILED.getCode()).setMsg(StatusEnum.FAILED.getMsg());
+        }
     }
 }

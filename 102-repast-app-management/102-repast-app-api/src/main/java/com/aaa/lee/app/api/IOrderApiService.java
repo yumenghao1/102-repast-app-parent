@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 /**
  * @Company AAA软件教育
  * @Author Seven Lee
@@ -23,4 +25,7 @@ public interface IOrderApiService {
 
     @PostMapping("/reduceProductToCart")
     ResultData reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem);
+
+    @PostMapping("/cleanProductToCart")
+    ResultData cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems);
 }
