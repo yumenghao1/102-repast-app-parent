@@ -36,9 +36,9 @@ public class CartController extends BaseController {
     @PostMapping("/addProductToCart")
     @ApiOperation(value = "添加购物车", notes = "添加购物车并保存到购物车表，并对库存数量进行操作")
     public ResultData addProductToCart(String token, CartItem cartItem) {
-        ResultData cartItemResultData = iOrderApiService.addProductToCart(token, cartItem, iShopApiService.getProductStockById());
+        ResultData<CartItem> cartItemResultData = iOrderApiService.addProductToCart(token, cartItem, iShopApiService.getProductStockById());
         if (cartItemResultData.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
-            return checkProductStock(cartItem);
+            return checkProductStock(cartItemResultData.getData());
         }
         return super.failed(StatusEnum.FAILED.getMsg());
     }
@@ -88,6 +88,19 @@ public class CartController extends BaseController {
         } else {
             return super.failed(StatusEnum.FAILED.getMsg());
         }
+    }
+
+    /**
+     * 获取购物车列表
+     *
+     * @param token
+     * @param cartItem
+     * @return
+     */
+    @PostMapping("/getCartItemList")
+    @ApiOperation(value = "获取购物车列表", notes = "获取购物车列表")
+    public ResultData getCartItemList(String token, CartItem cartItem) {
+        return iOrderApiService.getCartItemList(token, cartItem);
     }
 
 

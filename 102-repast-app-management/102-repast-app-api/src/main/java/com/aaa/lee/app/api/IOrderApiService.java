@@ -21,14 +21,17 @@ import java.util.List;
 public interface IOrderApiService {
 
     @PostMapping("/addProductToCart")
-    ResultData addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock") Long stock);
+    ResultData<CartItem> addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock") Long stock);
 
     @PostMapping("/reduceProductToCart")
     ResultData reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem);
 
     @PostMapping("/cleanProductToCart")
-    ResultData cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems);
+    ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems);
 
     @PostMapping("/test")
     List<CartItem> test(@RequestParam("token") String token);
+
+    @PostMapping("/getCartItemList")
+    ResultData<List<CartItem>> getCartItemList(@RequestParam("token") String token, @RequestBody CartItem cartItem);
 }

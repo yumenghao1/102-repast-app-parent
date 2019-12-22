@@ -12,7 +12,6 @@
     <artifactId>102-repast-app-provider-management</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>102-repast-app-userinfo-provider-8081</module>
         <module>102-repast-app-order-provider-8089</module>
     </modules>
 

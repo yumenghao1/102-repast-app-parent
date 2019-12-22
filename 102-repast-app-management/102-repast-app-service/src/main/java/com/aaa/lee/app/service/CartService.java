@@ -44,20 +44,33 @@ public class CartService extends BaseService<CartItem> {
      * @description 加入购物车
      * @date 2019/12/19
      **/
-    public boolean addProductToCart(CartItem cartItem, Long stock) {
+    public ResultData<CartItem> addProductToCart(CartItem cartItem, Long stock) {
         int result = 0;
+        boolean istimeout = false;
+        CartItem newCartItem = new CartItem();
+        ResultData resultData = new ResultData();
         if (stock > 0) {
-            CartItem newCartItem = findByProuct(cartItem.getMemberId(), cartItem.getProductId(), cartItem.getDeleteStatus());
+            // 进入这进行购物车加，库存减少，至于减多少，需要进行判断，该商品是锁定库存还是未锁定库存的商品，
+            //如果该商品已经锁定库存，就直接减1，如果该商品是未锁定的，就直接减去（已有的加上1）
+            newCartItem = findByProuct(cartItem.getMemberId(), cartItem.getProductId(), cartItem.getDeleteStatus());
             if (null != newCartItem) {
+                // true就是锁定库存的
+                istimeout = isTimeout(cartItem);
                 result = cartItemMapper.updateByPrimaryKey(upDateCartItem(newCartItem, cartItem.getQuantity()));
             } else {
                 result = cartItemMapper.insert(cartItem.setCreateDate(Timestamp.valueOf(DateUtil.getDateNow())));
             }
         }
         if (result > 0) {
-            return true;
+            resultData.setCode(LoginStatus.LOGIN_SUCCESS.getCode()).setMsg(StatusEnum.SUCCESS.getMsg());
+            if (istimeout) {
+                resultData.setData(newCartItem.setQuantity(cartItem.getQuantity()));
+            } else {
+                resultData.setData(newCartItem.setQuantity(newCartItem.getQuantity() + cartItem.getQuantity()));
+            }
+            return resultData;
         }
-        return false;
+        return resultData.setCode(LoginStatus.LOGIN_FAILED.getCode()).setMsg(StatusEnum.FAILED.getMsg());
     }
 
     /**
@@ -97,7 +110,7 @@ public class CartService extends BaseService<CartItem> {
     }
 
     /**
-     * 对购物车商品数量进行修改
+     * 对购物车商品数量进行重新封装
      *
      * @param oldCartItem
      * @param quantity
@@ -140,6 +153,7 @@ public class CartService extends BaseService<CartItem> {
 
     /**
      * 判断是否为超时商品
+     * true是查询到的是锁定库存的
      *
      * @param newCartItem
      * @return
@@ -165,9 +179,9 @@ public class CartService extends BaseService<CartItem> {
      * @param cartItems
      * @return
      */
-    public ResultData cleanProductToCart(List<CartItem> cartItems) {
+    public ResultData<List<CartItem>> cleanProductToCart(List<CartItem> cartItems) {
         List<CartItem> newCarItems = new ArrayList<>();
-        ResultData resultData = new ResultData();
+        ResultData<List<CartItem>> resultData = new ResultData<List<CartItem>>();
         boolean b = true;
         // 查询出所有购物车商品，然后判断是否为失效购物车商品，这些不是失效的商品都是必要要操控库存的
         for (CartItem cartItem : cartItems) {
@@ -191,5 +205,25 @@ public class CartService extends BaseService<CartItem> {
         } else {
             return resultData.setCode(LoginStatus.LOGIN_FAILED.getCode()).setMsg(StatusEnum.FAILED.getMsg());
         }
+    }
+
+    /**
+     * 根据会员id 店铺id 不是删除的 查询购物车列表
+     *
+     * @param cartItem
+     * @return
+     */
+    public List<CartItem> getCartItemList(CartItem cartItem) {
+        Example example = new Example(CartItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("memberId", cartItem.getMemberId())
+                .andEqualTo("shopId", cartItem.getShopId())
+                .andEqualTo("deleteStatus", cartItem.getDeleteStatus());
+        List<CartItem> cartItems = cartItemMapper.selectByExample(example);
+        if (cartItems.size() > 0) {
+            // 说明查询到数据
+            return cartItems;
+        }
+        return null;
     }
 }
