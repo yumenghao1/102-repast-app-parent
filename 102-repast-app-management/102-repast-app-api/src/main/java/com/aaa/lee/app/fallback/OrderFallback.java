@@ -35,6 +35,11 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
             public ResultData cleanProductToCart(String token, List<CartItem> cartItems) {
                 return new ResultData().setMsg("清空购物车商品报错熔断成功");
             }
+
+            @Override
+            public List<CartItem> test(String token) {
+                return null;
+            }
         };
     }
 }

@@ -56,6 +56,7 @@ public class CartController extends BaseController {
 
     /**
      * 清空商品
+     *
      * @param token
      * @param cartItems
      * @return
@@ -63,6 +64,18 @@ public class CartController extends BaseController {
     @PostMapping("/cleanProductToCart")
     public ResultData cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems) {
         return cartService.cleanProductToCart(cartItems);
+    }
+
+    /**
+     * 清空商品
+     *
+     * @param
+     * @param
+     * @return
+     */
+    @PostMapping("/test")
+    public List<CartItem> test(@RequestParam("token") String token) {
+        return cartService.noPass(Integer.valueOf(token));
     }
 
 

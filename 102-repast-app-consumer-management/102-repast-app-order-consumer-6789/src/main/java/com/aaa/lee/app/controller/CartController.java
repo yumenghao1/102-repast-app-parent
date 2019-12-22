@@ -72,15 +72,6 @@ public class CartController extends BaseController {
         // 为true是对购物车商品清空成功，在根据resultData来判断是否对库存进行操作，被传回来的商品就是一定要对库存进行操作
         if (reduceProduct.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
             return iShopApiService.updateProductStock(cartItems);
-//            for (CartItem cartItem : (List<CartItem>) reduceProduct.getData()) {
-//                ResultData resultData = checkProductStock(cartItem);
-//                if (resultData.getCode() == LoginStatus.LOGIN_SUCCESS.getCode()) {
-//                    b = true;
-//                }
-//            }
-//            if (b) {
-//                return super.success(StatusEnum.SUCCESS.getMsg());
-//            }
         }
         return super.failed(StatusEnum.FAILED.getMsg());
     }

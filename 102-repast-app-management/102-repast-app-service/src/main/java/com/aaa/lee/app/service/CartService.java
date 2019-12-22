@@ -79,6 +79,24 @@ public class CartService extends BaseService<CartItem> {
     }
 
     /**
+     * @return java.lang.Boolean
+     * @throws
+     * @author
+     * @description 查询10分钟没有操作的购物车商品进行库存回复
+     * @date 2019/12/19
+     **/
+    public List<CartItem> noPass(Integer deleteStatus) {
+        Example example = new Example(CartItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("deleteStatus", deleteStatus).andBetween("modifyDate", new Timestamp(System.currentTimeMillis() - 600000), Timestamp.valueOf(DateUtil.getDateNow()));
+        List<CartItem> cartItems = cartItemMapper.selectByExample(example);
+        if (cartItems.size() > 0) {
+            return cartItems;
+        }
+        return null;
+    }
+
+    /**
      * 对购物车商品数量进行修改
      *
      * @param oldCartItem

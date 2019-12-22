@@ -28,4 +28,7 @@ public interface IOrderApiService {
 
     @PostMapping("/cleanProductToCart")
     ResultData cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems);
+
+    @PostMapping("/test")
+    List<CartItem> test(@RequestParam("token") String token);
 }

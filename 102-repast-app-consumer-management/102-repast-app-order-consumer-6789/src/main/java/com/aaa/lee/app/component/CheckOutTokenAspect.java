@@ -39,13 +39,13 @@ public class CheckOutTokenAspect {
      */
     @Around("token()")
     public Object doToken(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object proceed = null;
+
+        if (joinPoint.getArgs() != null) {
             if (StringUtil.isNotEmpty((String) joinPoint.getArgs()[0])) {
-                proceed = joinPoint.proceed();
-                return proceed;
-            } else {
-                return new ResultData<>().setCode(LoginStatus.USER_HAS_NOT_PERMISSION.getCode()).setMsg(LoginStatus.USER_HAS_NOT_PERMISSION.getMsg());
+                return joinPoint.proceed();
             }
+        }
+        return new ResultData<>().setCode(LoginStatus.USER_HAS_NOT_PERMISSION.getCode()).setMsg(LoginStatus.USER_HAS_NOT_PERMISSION.getMsg());
     }
 }
 
