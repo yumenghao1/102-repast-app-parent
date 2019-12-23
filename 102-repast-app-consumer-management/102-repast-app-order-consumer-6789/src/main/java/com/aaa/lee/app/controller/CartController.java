@@ -67,8 +67,8 @@ public class CartController extends BaseController {
     @PostMapping("/cleanProductToCart")
     @ApiOperation(value = "清空购物车", notes = "清空购物车")
     public ResultData cleanProductToCart(String token, @RequestBody List<CartItem> cartItems) {
-//        boolean b = false;
-        ResultData reduceProduct = iOrderApiService.cleanProductToCart(token, cartItems);
+        ResultData reduceProduct = iOrderApiService.cleanProductToCart(token, cartItems, Integer.valueOf(StatusEnum.SUCCESS.getCode()));
+        System.out.println(reduceProduct.toString());
         // 为true是对购物车商品清空成功，在根据resultData来判断是否对库存进行操作，被传回来的商品就是一定要对库存进行操作
         if (reduceProduct.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
             return iShopApiService.updateProductStock(cartItems);

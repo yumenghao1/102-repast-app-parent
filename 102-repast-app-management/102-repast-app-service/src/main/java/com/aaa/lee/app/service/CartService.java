@@ -10,6 +10,7 @@ import com.aaa.lee.app.utils.DateUtil;
 import org.apache.commons.httpclient.util.DateParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.entity.Example;
 
@@ -24,6 +25,7 @@ import java.util.List;
  * @Date Create in 2019/12/19 14:00
  * @Description
  **/
+@Transactional
 @Service
 public class CartService extends BaseService<CartItem> {
 
@@ -159,13 +161,13 @@ public class CartService extends BaseService<CartItem> {
      * @return
      */
     private boolean isTimeout(CartItem newCartItem) {
-        Timestamp timestamp = Timestamp.valueOf(DateUtil.getDateNow());
+        String timestamp1 = DateUtil.formatDate(new Date(System.currentTimeMillis() - 600000));
         Example example = new Example(CartItem.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("productId", newCartItem.getProductId())
                 .andEqualTo("memberId", newCartItem.getMemberId())
                 .andEqualTo("deleteStatus", newCartItem.getDeleteStatus())
-                .andBetween("modifyDate", new Timestamp(System.currentTimeMillis() - 600000), Timestamp.valueOf(DateUtil.getDateNow()));
+                .andBetween("modifyDate", timestamp1, DateUtil.getDateNow());
         List<CartItem> cartItems = cartItemMapper.selectByExample(example);
         if (cartItems.size() > 0) {
             return true;
@@ -175,11 +177,12 @@ public class CartService extends BaseService<CartItem> {
 
     /**
      * 清空购物车
+     * 查询锁定库存的商品
      *
      * @param cartItems
      * @return
      */
-    public ResultData<List<CartItem>> cleanProductToCart(List<CartItem> cartItems) {
+    public ResultData<List<CartItem>> cleanProductToCart(List<CartItem> cartItems, Integer status) {
         List<CartItem> newCarItems = new ArrayList<>();
         ResultData<List<CartItem>> resultData = new ResultData<List<CartItem>>();
         boolean b = true;
@@ -190,7 +193,16 @@ public class CartService extends BaseService<CartItem> {
             // 不为空然后就先把要修改库存的数据放到list中返回
             if (null != cartItem) {
                 if (isTimeout(cartItem)) {
-                    newCarItems.add(cartItem);
+                    // status 为1 就是清空购物车，为2 就是下单清购物车
+                    if (status.equals(Integer.valueOf(StatusEnum.SUCCESS.getCode()))) {
+                        // 为true代表锁定库存商品
+                        newCarItems.add(cartItem);
+                    }
+                } else {
+                    // 根据status来保证清空购物车永远不会添加，下单减库存进入该方法，添加未锁定库存商品，返回进行减少库存
+                    if (status.equals(Integer.valueOf(StatusEnum.FAILED.getCode()))) {
+                        newCarItems.add(cartItem);
+                    }
                 }
                 // 逻辑删除购物车商品
                 int i = cartItemMapper.updateByPrimaryKey(cartItem.setModifyDate(Timestamp.valueOf(DateUtil.getDateNow())).setDeleteStatus(2).setQuantity(0));

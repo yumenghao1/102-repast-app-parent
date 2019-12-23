@@ -53,15 +53,19 @@ public class CartController extends BaseController {
     }
 
     /**
-     * 清空商品
-     *
+     * 清空个人购物车商品
+     * 分为两种情况，返回两种数据
+     * status为1是手动清空购物车 则返回锁定库存商品进行库存回复
+     * status为2是下单清空购物车 则返回未锁定库存商品进行库存减少
      * @param token
      * @param cartItems
      * @return
      */
     @PostMapping("/cleanProductToCart")
-    public ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems) {
-        return cartService.cleanProductToCart(cartItems);
+    public ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems,@RequestParam("status") Integer status) {
+        ResultData<List<CartItem>> listResultData = cartService.cleanProductToCart(cartItems, status);
+        System.out.println(listResultData.toString());
+        return listResultData;
     }
 
     /**

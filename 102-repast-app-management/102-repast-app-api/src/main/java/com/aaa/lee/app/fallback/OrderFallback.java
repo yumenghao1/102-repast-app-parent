@@ -32,7 +32,7 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
             }
 
             @Override
-            public ResultData cleanProductToCart(String token, List<CartItem> cartItems) {
+            public ResultData cleanProductToCart(String token, List<CartItem> cartItems,Integer status) {
                 return new ResultData().setMsg("清空购物车商品报错熔断成功");
             }
 

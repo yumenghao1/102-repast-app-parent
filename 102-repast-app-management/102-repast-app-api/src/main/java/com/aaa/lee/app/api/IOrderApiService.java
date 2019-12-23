@@ -27,7 +27,7 @@ public interface IOrderApiService {
     ResultData reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem);
 
     @PostMapping("/cleanProductToCart")
-    ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems);
+    ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems,@RequestParam("status") Integer status);
 
     @PostMapping("/test")
     List<CartItem> test(@RequestParam("token") String token);

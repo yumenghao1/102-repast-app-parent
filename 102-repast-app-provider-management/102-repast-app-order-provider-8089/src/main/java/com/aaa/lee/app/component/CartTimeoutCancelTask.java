@@ -25,8 +25,9 @@ public class CartTimeoutCancelTask {
     private void CartTimeoutCancelTask() {
         System.out.println("定时清理");
         List<CartItem> cartItems = cartService.noPass(Integer.valueOf(StatusEnum.SUCCESS.getCode()));
+        // TODO 有过空指针
         if (cartItems.size() > 0) {
-            System.out.println("回复这些商品库存"+cartItems.toString());
+            System.out.println("回复这些商品库存" + cartItems.toString());
         }
     }
 
