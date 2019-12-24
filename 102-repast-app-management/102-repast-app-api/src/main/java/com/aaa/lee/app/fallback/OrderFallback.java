@@ -8,7 +8,9 @@ import com.aaa.lee.app.status.LoginStatus;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Company AAA软件教育
@@ -34,7 +36,7 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
             }
 
             @Override
-            public ResultData cleanProductToCart(String token, List<CartItem> cartItems,Integer status) {
+            public ResultData cleanProductToCart(String token, List<CartItem> cartItems, Integer status) {
                 return new ResultData().setMsg("清空购物车商品报错熔断成功");
             }
 
@@ -51,6 +53,11 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
             @Override
             public ResultData getProductAndCoupon(String token, Integer price, Coupon coupon) {
                 return new ResultData().setMsg("计算订单列表报错熔断成功");
+            }
+
+            @Override
+            public Map<String,Object> wxPay(String token, String openid, String orderId, Float amount) {
+                return new HashMap<>();
             }
 
             @Override

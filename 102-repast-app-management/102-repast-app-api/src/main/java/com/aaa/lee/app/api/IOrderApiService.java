@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Company AAA软件教育
@@ -41,4 +42,7 @@ public interface IOrderApiService {
 
     @PostMapping("/getProductAndCoupon")
     ResultData getProductAndCoupon(@RequestParam("token") String token, @RequestParam("price") Integer price, @RequestBody Coupon coupon);
+
+    @PostMapping("/wxPay")
+    Map<String, Object> wxPay(@RequestParam("token") String token, @RequestParam("openid")   String openid, @RequestParam("orderSn") String orderSn, @RequestParam("amount") Float amount);
 }

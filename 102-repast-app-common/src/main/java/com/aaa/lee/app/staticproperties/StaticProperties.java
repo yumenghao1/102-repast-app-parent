@@ -9,5 +9,5 @@ package com.aaa.lee.app.staticproperties;
 public class StaticProperties {
 
     public static final String OK = "OK";
-
+    public static final String PAY_MAP_KEY="errMsg";
 }

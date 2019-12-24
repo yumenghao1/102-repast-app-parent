@@ -88,6 +88,7 @@ public class OrderController {
 
     /**
      * 获取价格和优惠券计算价格
+     *
      * @param token
      * @param price
      * @param coupon
@@ -95,6 +96,7 @@ public class OrderController {
      */
     @PostMapping("/getProductAndCoupon")
     public ResultData getProductAndCoupon(@RequestParam("token") String token, @RequestParam("price") Integer price, @RequestBody Coupon coupon) {
-        return orderService.getProductAndCoupon(price,coupon);
+        return orderService.getProductAndCoupon(price, coupon);
     }
+
 }
