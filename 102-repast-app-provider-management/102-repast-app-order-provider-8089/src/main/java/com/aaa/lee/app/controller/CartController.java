@@ -7,6 +7,7 @@ import com.aaa.lee.app.service.CartService;
 import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.status.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,6 @@ import java.util.List;
  * 购物车服务
  */
 @RestController
-
 public class CartController extends BaseController {
 
     @Autowired
@@ -28,6 +28,7 @@ public class CartController extends BaseController {
      * @param token
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/addProductToCart")
     public ResultData<CartItem> addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock") Long stock) {
         ResultData<CartItem> resultData = cartService.addProductToCart(cartItem, stock);
@@ -77,8 +78,8 @@ public class CartController extends BaseController {
      */
     // TODO 该方法没用
     @PostMapping("/test")
-    public List<CartItem> test(@RequestParam("token") String token) {
-        return cartService.noPass(Integer.valueOf(token));
+    public Boolean test(@RequestParam("token") String token) {
+        return false;
     }
 
     /**

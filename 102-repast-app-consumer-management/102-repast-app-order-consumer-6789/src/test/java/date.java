@@ -1,3 +1,4 @@
+import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.utils.JSONUtil;
 
@@ -16,15 +17,19 @@ public class date {
 //        Timestamp timestamp = new Timestamp(time1);
 //        System.out.println(timestamp);
 //
-        List<CartItem> cartItems = new ArrayList<>();
-        CartItem cartItem = new CartItem().setDeleteStatus(1).setMemberId(1L).setProductId(1L);
-        CartItem cartItem1 = new CartItem().setDeleteStatus(1).setMemberId(1L).setProductId(2L);
-        CartItem cartItem2 = new CartItem().setDeleteStatus(1).setMemberId(1L).setProductId(3L);
-        cartItems.add(cartItem);
-        cartItems.add(cartItem1);
-        cartItems.add(cartItem2);
-        String s = JSONUtil.toJsonString(cartItems);
-        System.out.println(s);
+//        List<CartItem> cartItems = new ArrayList<>();
+//        CartItem cartItem = new CartItem().setDeleteStatus(1).setMemberId(1L).setProductId(1L);
+//        CartItem cartItem1 = new CartItem().setDeleteStatus(1).setMemberId(1L).setProductId(2L);
+//        CartItem cartItem2 = new CartItem().setDeleteStatus(1).setMemberId(1L).setProductId(3L);
+//        cartItems.add(cartItem);
+//        cartItems.add(cartItem1);
+//        cartItems.add(cartItem2);
+//        String s = JSONUtil.toJsonString(cartItems);
+//        System.out.println(s);
 
+        ResultData<Object> resultData = new ResultData<>();
+        if (null!=resultData.getData()){
+            System.out.println("111");
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.fallback.RepastFallback;
 import com.aaa.lee.app.model.Coupon;
 import com.aaa.lee.app.model.Member;
+import com.aaa.lee.app.model.MemberReceiveAddress;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +35,7 @@ public interface IRepastService {
     Boolean doLogin(@RequestBody Member member);
 
     @GetMapping("/getAdrByMemberId")
-    ResultData getAdrByMemberId(@RequestParam("token") String token, @RequestParam("id") Long id);
+    ResultData<List<MemberReceiveAddress>> getAdrByMemberId(@RequestParam("token") String token, @RequestParam("id") Long id);
 
     @GetMapping("/getCouponByMemberId")
     ResultData<List<Coupon>> getCouponByMemberId(@RequestParam("token") String token, @RequestParam("memberId") Long memberId);

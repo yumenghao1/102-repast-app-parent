@@ -30,8 +30,11 @@ public interface IOrderApiService {
     ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems,@RequestParam("status") Integer status);
 
     @PostMapping("/test")
-    List<CartItem> test(@RequestParam("token") String token);
+   boolean test(@RequestParam("token") String token);
 
     @PostMapping("/getCartItemList")
     ResultData<List<CartItem>> getCartItemList(@RequestParam("token") String token, @RequestBody CartItem cartItem);
+
+    @PostMapping("/getTakeOutList")
+    ResultData getTakeOutList(@RequestParam("token") String token, @RequestBody CartItem cartItem);
 }

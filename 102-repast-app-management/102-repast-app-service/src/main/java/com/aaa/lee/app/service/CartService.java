@@ -25,8 +25,8 @@ import java.util.List;
  * @Date Create in 2019/12/19 14:00
  * @Description
  **/
-@Transactional
 @Service
+
 public class CartService extends BaseService<CartItem> {
 
     @Autowired
@@ -48,7 +48,7 @@ public class CartService extends BaseService<CartItem> {
      **/
     public ResultData<CartItem> addProductToCart(CartItem cartItem, Long stock) {
         int result = 0;
-        boolean istimeout = false;
+        boolean istimeout=true;
         CartItem newCartItem = new CartItem();
         ResultData resultData = new ResultData();
         if (stock > 0) {
@@ -62,15 +62,15 @@ public class CartService extends BaseService<CartItem> {
             } else {
                 result = cartItemMapper.insert(cartItem.setCreateDate(Timestamp.valueOf(DateUtil.getDateNow())));
             }
-        }
-        if (result > 0) {
-            resultData.setCode(LoginStatus.LOGIN_SUCCESS.getCode()).setMsg(StatusEnum.SUCCESS.getMsg());
-            if (istimeout) {
-                resultData.setData(newCartItem.setQuantity(cartItem.getQuantity()));
-            } else {
-                resultData.setData(newCartItem.setQuantity(newCartItem.getQuantity() + cartItem.getQuantity()));
+            if (result > 0) {
+                resultData.setCode(LoginStatus.LOGIN_SUCCESS.getCode()).setMsg(StatusEnum.SUCCESS.getMsg());
+                if (istimeout) {
+                    resultData.setData(cartItem);
+                } else {
+                    resultData.setData(newCartItem.setQuantity(newCartItem.getQuantity()+cartItem.getQuantity()));
+                }
+                return resultData;
             }
-            return resultData;
         }
         return resultData.setCode(LoginStatus.LOGIN_FAILED.getCode()).setMsg(StatusEnum.FAILED.getMsg());
     }
@@ -238,4 +238,5 @@ public class CartService extends BaseService<CartItem> {
         }
         return null;
     }
+
 }

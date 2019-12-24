@@ -10,6 +10,7 @@ import com.aaa.lee.app.status.StatusEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,6 @@ import java.util.List;
 @RestController
 @Api(value = "购物车", tags = "购物车服务接口")
 public class CartController extends BaseController {
-
     @Autowired
     private IOrderApiService iOrderApiService;
     @Autowired
@@ -78,7 +78,6 @@ public class CartController extends BaseController {
 
     /**
      * 验证库存是否修改成功
-     *
      * @param cartItem
      * @return
      */
