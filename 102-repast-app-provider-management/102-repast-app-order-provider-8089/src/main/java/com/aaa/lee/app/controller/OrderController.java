@@ -7,6 +7,7 @@ import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
 import com.aaa.lee.app.model.MemberReceiveAddress;
 import com.aaa.lee.app.service.CartService;
+import com.aaa.lee.app.service.OrderService;
 import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.status.StatusEnum;
 import com.aaa.lee.app.vo.TakeOutVo;
@@ -26,7 +27,8 @@ public class OrderController {
 
     @Autowired
     private CartService cartService;
-
+    @Autowired
+    private OrderService orderService;
     @Autowired
     private IRepastService repastServiceFegin;
     @Autowired
@@ -66,7 +68,7 @@ public class OrderController {
                         ResultData resultData = shopServiceFegin.updateProductStock(listResultData.getData());
                         if (null != resultData && resultData.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode()) && (Boolean) resultData.getData()) {
                             return takeOutVoResultData.setCode(LoginStatus.LOGIN_SUCCESS.getCode()).setMsg(StatusEnum.SUCCESS.getMsg()).setData(takeOutVo.setCartItemList(cartItemList));
-                        }else {
+                        } else {
                             throw new NullPointerException("修改库存出现异常需要回滚");
                         }
                     } else {
@@ -84,4 +86,15 @@ public class OrderController {
         return null;
     }
 
+    /**
+     * 获取价格和优惠券计算价格
+     * @param token
+     * @param price
+     * @param coupon
+     * @return
+     */
+    @PostMapping("/getProductAndCoupon")
+    public ResultData getProductAndCoupon(@RequestParam("token") String token, @RequestParam("price") Integer price, @RequestBody Coupon coupon) {
+        return orderService.getProductAndCoupon(price,coupon);
+    }
 }

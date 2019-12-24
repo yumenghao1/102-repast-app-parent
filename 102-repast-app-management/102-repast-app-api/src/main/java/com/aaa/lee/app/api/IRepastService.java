@@ -39,4 +39,7 @@ public interface IRepastService {
 
     @GetMapping("/getCouponByMemberId")
     ResultData<List<Coupon>> getCouponByMemberId(@RequestParam("token") String token, @RequestParam("memberId") Long memberId);
+
+    @PostMapping("/selectCouponById")
+    ResultData<Coupon> selectCouponById(@RequestParam("token") String token,@RequestParam("couponId") Integer couponId);
 }

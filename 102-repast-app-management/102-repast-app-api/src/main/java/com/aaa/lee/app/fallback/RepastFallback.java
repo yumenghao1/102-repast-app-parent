@@ -5,6 +5,7 @@ import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.Coupon;
 import com.aaa.lee.app.model.Member;
 import com.aaa.lee.app.model.MemberReceiveAddress;
+import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.utils.DateUtil;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -86,6 +87,11 @@ public class RepastFallback implements FallbackFactory<IRepastService> {
                         .setUseType(0)
                         .setNote("我日你mmp"));
                 return new ResultData().setCode("200").setMsg("获取成功").setData(coupons);
+            }
+
+            @Override
+            public ResultData<Coupon> selectCouponById(String token, Integer couponId) {
+                return new ResultData<Coupon>().setData(new Coupon().setId(1L).setMinPoint(BigDecimal.valueOf(20)).setAmount(BigDecimal.valueOf(5))).setCode(LoginStatus.LOGIN_SUCCESS.getCode());
             }
         };
         return repastService;

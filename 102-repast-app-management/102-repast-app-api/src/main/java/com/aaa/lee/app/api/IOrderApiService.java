@@ -3,6 +3,7 @@ package com.aaa.lee.app.api;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.fallback.OrderFallback;
 import com.aaa.lee.app.model.CartItem;
+import com.aaa.lee.app.model.Coupon;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,14 +28,17 @@ public interface IOrderApiService {
     ResultData reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem);
 
     @PostMapping("/cleanProductToCart")
-    ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems,@RequestParam("status") Integer status);
+    ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems, @RequestParam("status") Integer status);
 
     @PostMapping("/test")
-   boolean test(@RequestParam("token") String token);
+    boolean test(@RequestParam("token") String token);
 
     @PostMapping("/getCartItemList")
     ResultData<List<CartItem>> getCartItemList(@RequestParam("token") String token, @RequestBody CartItem cartItem);
 
     @PostMapping("/getTakeOutList")
     ResultData getTakeOutList(@RequestParam("token") String token, @RequestBody CartItem cartItem);
+
+    @PostMapping("/getProductAndCoupon")
+    ResultData getProductAndCoupon(@RequestParam("token") String token, @RequestParam("price") Integer price, @RequestBody Coupon coupon);
 }
