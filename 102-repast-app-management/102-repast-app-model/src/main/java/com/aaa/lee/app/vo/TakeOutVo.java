@@ -16,7 +16,6 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 public class TakeOutVo implements Serializable {
     private List<CartItem> cartItemList;
     private List<MemberReceiveAddress> memberReceiveAddressList;

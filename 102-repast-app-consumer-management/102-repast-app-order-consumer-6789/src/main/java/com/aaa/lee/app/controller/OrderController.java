@@ -8,6 +8,7 @@ import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
 import com.aaa.lee.app.status.LoginStatus;
+import com.aaa.lee.app.vo.TakeOutVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,18 +39,36 @@ public class OrderController extends BaseController {
     public ResultData getShopByShopType(String token, String shopType) {
         return shopApiService.getShopByShopType(token, shopType);
     }
+//
+//    /**
+//     * 获取数据进行下单
+//     *
+//     * @param token
+//     * @param cartItem
+//     * @return
+//     */
+//    @PostMapping("/getTakeOutList")
+//    @ApiOperation(value = "获取外卖参数列表", notes = "获取下单信息进行外卖下单")
+//    public ResultData getTakeOutList(String token, CartItem cartItem) {
+//        return iOrderApiService.getTakeOutList(token, cartItem);
+//    }
 
     /**
-     * 获取数据进行下单
-     *
-     * @param token
-     * @param cartItem
+     * @param
      * @return
-     */
+     * @throws
+     * @author YMH
+     * @description
+     * @date create in 2019/12/25 0:32
+     **/
     @PostMapping("/getTakeOutList")
     @ApiOperation(value = "获取外卖参数列表", notes = "获取下单信息进行外卖下单")
     public ResultData getTakeOutList(String token, CartItem cartItem) {
-        return iOrderApiService.getTakeOutList(token, cartItem);
+        TakeOutVo takeOutList = iOrderApiService.getTakeOutList(token, cartItem);
+        if (null != takeOutList) {
+            return success(takeOutList);
+        }
+        return failed();
     }
 
     /**
@@ -62,13 +81,11 @@ public class OrderController extends BaseController {
     @PostMapping("/getProductAndCoupon")
     @ApiOperation(value = "获取钱和优惠券计算金额", notes = "获取钱和优惠券计算金额")
     public ResultData getProductAndCoupon(String token, Integer price, Coupon coupon) {
-        ResultData<Coupon> couponResultData = repastService.selectCouponById(token, Integer.valueOf(coupon.getId().toString()));
-        if (null != couponResultData) {
-            if (couponResultData.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
-                return iOrderApiService.getProductAndCoupon(token, price, couponResultData.getData());
-            }
+        price = iOrderApiService.getProductAndCoupon(token, price, coupon);
+        if (null != price) {
+            return success(price);
         }
-        return super.failed();
+        return failed();
     }
 
 

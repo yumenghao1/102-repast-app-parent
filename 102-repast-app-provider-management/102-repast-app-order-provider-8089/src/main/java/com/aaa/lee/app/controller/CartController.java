@@ -22,18 +22,17 @@ public class CartController extends BaseController {
     private CartService cartService;
 
     /**
-     * 购物车的增加
-     *
-     * @param cartItem
-     * @param token
-     * @return
-     */
-    @Transactional(rollbackFor = Exception.class)
+     * @author YMH
+     * @description
+            增加购物车
+     * @param 
+     * @date create in 2019/12/25 1:48
+     * @return 
+     * @throws 
+     **/
     @PostMapping("/addProductToCart")
     public ResultData<CartItem> addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock") Long stock) {
-        ResultData<CartItem> resultData = cartService.addProductToCart(cartItem, stock);
-        System.out.println(resultData.toString());
-        return resultData;
+        return cartService.addProductToCart(cartItem, stock);
     }
 
     /**
@@ -58,12 +57,13 @@ public class CartController extends BaseController {
      * 分为两种情况，返回两种数据
      * status为1是手动清空购物车 则返回锁定库存商品进行库存回复
      * status为2是下单清空购物车 则返回未锁定库存商品进行库存减少
+     *
      * @param token
      * @param cartItems
      * @return
      */
     @PostMapping("/cleanProductToCart")
-    public ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems,@RequestParam("status") Integer status) {
+    public ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems, @RequestParam("status") Integer status) {
         ResultData<List<CartItem>> listResultData = cartService.cleanProductToCart(cartItems, status);
         System.out.println(listResultData.toString());
         return listResultData;

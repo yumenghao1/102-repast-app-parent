@@ -12,9 +12,9 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * @Company AAA软件教育
- * @Author Seven Lee
- * @Date Create in 2019/12/19 15:01
+ * @Company
+ * @Author YMH
+ * @Date Create in 2019/12/24 23:29
  * @Description
  **/
 @Configuration
@@ -22,15 +22,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
     /**
-     * @author Seven Lee
-     * @description
-     *      RequestHandlerSelectors.basePackage():扫描需要访问的controller
-     *      SAAS:自定义化系统
-     * @param []
-     * @date 2019/12/19
-     * @return springfox.documentation.spring.web.plugins.Docket
+     * @param
+     * @return
      * @throws
-    **/
+     * @author YMH
+     * @description
+     * @date create in 2019/12/24 23:37
+     **/
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)

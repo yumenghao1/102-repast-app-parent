@@ -39,16 +39,16 @@ public class CartService extends BaseService<CartItem> {
 
     /**
      * @param
-     * @param stock
-     * @return java.lang.Boolean
+     * @return
      * @throws
-     * @author Seven Lee
-     * @description 加入购物车
-     * @date 2019/12/19
+     * @author YMH
+     * @description 添加购物车
+     * @date create in 2019/12/25 1:25
      **/
+    @Transactional(rollbackFor = Exception.class)
     public ResultData<CartItem> addProductToCart(CartItem cartItem, Long stock) {
         int result = 0;
-        boolean istimeout=true;
+        boolean istimeout = true;
         CartItem newCartItem = new CartItem();
         ResultData resultData = new ResultData();
         if (stock > 0) {
@@ -67,7 +67,7 @@ public class CartService extends BaseService<CartItem> {
                 if (istimeout) {
                     resultData.setData(cartItem);
                 } else {
-                    resultData.setData(newCartItem.setQuantity(newCartItem.getQuantity()+cartItem.getQuantity()));
+                    resultData.setData(newCartItem.setQuantity(newCartItem.getQuantity() + cartItem.getQuantity()));
                 }
                 return resultData;
             }

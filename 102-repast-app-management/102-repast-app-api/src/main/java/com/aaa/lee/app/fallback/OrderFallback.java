@@ -5,9 +5,11 @@ import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
 import com.aaa.lee.app.status.LoginStatus;
+import com.aaa.lee.app.vo.TakeOutVo;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,17 +48,20 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
             }
 
             @Override
-            public ResultData getTakeOutList(String token, CartItem cartItem) {
-                return new ResultData().setMsg("获取外卖列表报错熔断成功");
+            public TakeOutVo getTakeOutList(String token, CartItem cartItem) {
+                List<CartItem> cartItems = new ArrayList<>();
+                cartItems.add(new CartItem().setProductName("测试熔断失败"));
+                return new TakeOutVo().setCartItemList(cartItems);
             }
 
             @Override
-            public ResultData getProductAndCoupon(String token, Integer price, Coupon coupon) {
-                return new ResultData().setMsg("计算订单列表报错熔断成功");
+            public Integer getProductAndCoupon(String token, Integer price, Coupon coupon) {
+                System.out.println("计算订单列表报错熔断成功");
+                return null;
             }
 
             @Override
-            public Map<String,Object> wxPay(String token, String openid, String orderId, Float amount) {
+            public Map<String, Object> wxPay(String token, String openid, String orderId, Float amount) {
                 return new HashMap<>();
             }
 

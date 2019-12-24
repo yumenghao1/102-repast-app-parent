@@ -10,4 +10,5 @@ public class StaticProperties {
 
     public static final String OK = "OK";
     public static final String PAY_MAP_KEY="errMsg";
+    public static final String GETTAKEOUTEXCEPTION="拉取外卖列表出现异常";
 }
