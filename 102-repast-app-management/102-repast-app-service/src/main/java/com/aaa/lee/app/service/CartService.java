@@ -257,7 +257,7 @@ public class CartService extends BaseService<CartItem> {
                 // 逻辑删除购物车商品
                 int i = cartItemMapper.updateByPrimaryKey(cartItem.setModifyDate(Timestamp.valueOf(DateUtil.getDateNow())).setDeleteStatus(2).setQuantity(0));
                 // 设置一个为true的boolean，只有失败才会变为false
-                if (i < 0) {
+                if (i <= 0) {
                     b = false;
                 }
             }

@@ -4,6 +4,7 @@ import com.aaa.lee.app.api.IOrderApiService;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
+import com.aaa.lee.app.vo.OrderVo;
 import com.aaa.lee.app.vo.TakeOutVo;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -64,6 +65,11 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
             @Override
             public Map<String, Object> wxPay(String token, String openid, String orderId, Float amount) {
                 return new HashMap<>();
+            }
+
+            @Override
+            public boolean insertOrder(String token, OrderVo orderVo) {
+                return false;
             }
 
             @Override

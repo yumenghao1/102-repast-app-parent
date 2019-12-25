@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = false)
-public class OrderVo extends Order{
+public class OrderVo implements Serializable {
+    Order order;
     List<OrderItem> orderItemList;
 }

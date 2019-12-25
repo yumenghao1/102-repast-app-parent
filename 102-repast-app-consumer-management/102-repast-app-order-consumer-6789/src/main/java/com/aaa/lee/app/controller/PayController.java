@@ -7,6 +7,7 @@ import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.staticproperties.StaticProperties;
 import com.aaa.lee.app.utils.PayUtil;
 import com.github.wxpay.sdk.WXPayUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import java.io.InputStreamReader;
 import java.util.Map;
 
 @RestController
+@Api(value = "支付", tags = "微信支付服务接口")
 public class PayController extends BaseController {
     @Autowired
     private IOrderApiService iOrderApiService;

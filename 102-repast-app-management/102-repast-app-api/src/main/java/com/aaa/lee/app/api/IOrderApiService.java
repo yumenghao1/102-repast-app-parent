@@ -4,6 +4,7 @@ import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.fallback.OrderFallback;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
+import com.aaa.lee.app.vo.OrderVo;
 import com.aaa.lee.app.vo.TakeOutVo;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -46,5 +47,8 @@ public interface IOrderApiService {
     Integer getProductAndCoupon(@RequestParam("token") String token, @RequestParam("price") Integer price, @RequestBody Coupon coupon);
 
     @PostMapping("/wxPay")
-    Map<String, Object> wxPay(@RequestParam("token") String token, @RequestParam("openid")   String openid, @RequestParam("orderSn") String orderSn, @RequestParam("amount") Float amount);
+    Map<String, Object> wxPay(@RequestParam("token") String token, @RequestParam("openid") String openid, @RequestParam("orderSn") String orderSn, @RequestParam("amount") Float amount);
+
+    @PostMapping("/insertOrder")
+    boolean insertOrder(@RequestParam("token") String token, @RequestBody OrderVo orderVo);
 }

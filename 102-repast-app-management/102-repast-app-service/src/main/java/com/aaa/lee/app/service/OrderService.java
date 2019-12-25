@@ -3,24 +3,32 @@ package com.aaa.lee.app.service;
 import com.aaa.lee.app.Myconst.WXConst;
 import com.aaa.lee.app.api.IRepastService;
 import com.aaa.lee.app.api.IShopApiService;
+import com.aaa.lee.app.base.BaseService;
 import com.aaa.lee.app.base.ResultData;
-import com.aaa.lee.app.model.CartItem;
-import com.aaa.lee.app.model.Coupon;
-import com.aaa.lee.app.model.MemberReceiveAddress;
+import com.aaa.lee.app.mapper.OrderMapper;
+import com.aaa.lee.app.model.*;
 import com.aaa.lee.app.staticproperties.StaticProperties;
 import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.status.StatusEnum;
+import com.aaa.lee.app.utils.DateUtil;
+import com.aaa.lee.app.utils.IDUtil;
 import com.aaa.lee.app.utils.PayUtil;
+import com.aaa.lee.app.utils.StringUtil;
+import com.aaa.lee.app.vo.OrderVo;
 import com.aaa.lee.app.vo.TakeOutVo;
 import com.github.wxpay.sdk.WXPayUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import sun.swing.plaf.synth.DefaultSynthStyle;
+import tk.mybatis.mapper.common.Mapper;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +39,15 @@ import java.util.Map;
  * @Version:
  */
 @Service
-public class OrderService {
+public class OrderService extends BaseService<Order> {
+
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Override
+    public Mapper<Order> getMapper() {
+        return orderMapper;
+    }
 
     private static Exception GetTakeOutException = new Exception(StaticProperties.GETTAKEOUTEXCEPTION);
 
@@ -107,4 +123,95 @@ public class OrderService {
         }
         return null;
     }
+
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 添加订单以及订单详情
+     * @date create in 2019/12/25 15:43
+     **/
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insertOrder(OrderVo orderVo, OrderItemService orderItemService, OrderOperateHistoryService orderOperateHistoryService) {
+        try {
+            boolean b = true;
+            Order order = orderVo.getOrder();
+            // 获取随机订单号
+            String OrderSn = StringUtil.getCharAndNum(StaticProperties.DEL_STATUS) + IDUtil.getUUID();
+            order.setOrderSn(OrderSn);
+            // 获取当前时间作为下单时间和第一次修改时间
+            Timestamp timestamp = Timestamp.valueOf(DateUtil.getDateNow());
+            order.setCreateTime(timestamp);
+            order.setModifyTime(timestamp);
+            // 如果是外卖，拼团，预约则为微信1，如果点餐，则为2
+            Integer orderType = order.getOrderType();
+            Integer payType;
+            if (orderType.equals(StaticProperties.TAKEOUT) || orderType.equals(StaticProperties.APPOINTMENT) || orderType.equals(StaticProperties.TOURDIY)) {
+                payType = StaticProperties.WX_PAY;
+            } else {
+                payType = StaticProperties.SHOP_PAY;
+            }
+            order.setPayType(payType);
+            // 默认邮费
+            order.setFreightAmount(StaticProperties.FREIGHT);
+            // 默认的是1 app支付
+            order.setSourceType(StaticProperties.SOURCETYPE);
+            // 默认的状态是待付款
+            order.setStatus(StaticProperties.NO_PAY);
+            // 默认的物流公司
+            order.setDeliveryCompany(StaticProperties.DELIVERY_COMPANY);
+            // 随机的物流单号
+            String delivery_sn = IDUtil.getUUID();
+            order.setDeliverySn(delivery_sn);
+            //设置默认的自动确认收货时间
+            order.setAutoConfirmDay(StaticProperties.AUTOCONFIRMDAY);
+            // 设置默认的成长值和积分
+            order.setIntegration(StaticProperties.INTEGRATION);
+            order.setGrowth(StaticProperties.INTEGRATION);
+            // 设置默认的发票类型
+            order.setBillType(StaticProperties.NO_PAY);
+            //设置默认的邮政编号
+            order.setReceiverPostCode(StaticProperties.POSTCODE);
+            //设置默认的收货状态
+            order.setConfirmStatus(StaticProperties.NO_CONFIRM_STATUS);
+            // 默认订单为有效状态
+            order.setDeleteStatus(StaticProperties.NOT_DEL_STATUS);
+            // 第一步添加订单到订单表，返回id进行添加到订单详情表
+            Integer save = super.save(order);
+            if (save > 0) {
+                // 便利商品详情进行添加订单详情
+                List<OrderItem> orderItems = orderVo.getOrderItemList();
+                for (OrderItem orderItem : orderItems) {
+                    // 设置订单id和编号存入订单详情表中
+                    orderItem.setOrderId(order.getId());
+                    orderItem.setOrderSn(order.getOrderSn());
+                    if (orderItemService.save(orderItem) <= 0) {
+                        b = false;
+                    }
+                }
+                if (b) {
+                    OrderOperateHistory orderOperateHistory = new OrderOperateHistory();
+                    orderOperateHistory.setOrderId(order.getId())
+                            .setOrderStatus(StaticProperties.NO_STOCK)
+                            .setCreateTime(Timestamp.valueOf(DateUtil.getDateNow()))
+                            .setOperateMan(StatusEnum.SUCCESS.getCode())
+                            .setShopId(order.getShopId()).setNote(order.getNote());
+                    Integer result = orderOperateHistoryService.save(orderOperateHistory);
+                    if (result > 0) {
+                        return true;
+                    }
+                }
+                throw new RuntimeException("新增订单抛出异常");
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("新增订单抛出异常");
+        }
+
+
+    }
+
+
 }

@@ -8,12 +8,14 @@ import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
 import com.aaa.lee.app.status.LoginStatus;
+import com.aaa.lee.app.vo.OrderVo;
 import com.aaa.lee.app.vo.TakeOutVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -39,19 +41,6 @@ public class OrderController extends BaseController {
     public ResultData getShopByShopType(String token, String shopType) {
         return shopApiService.getShopByShopType(token, shopType);
     }
-//
-//    /**
-//     * 获取数据进行下单
-//     *
-//     * @param token
-//     * @param cartItem
-//     * @return
-//     */
-//    @PostMapping("/getTakeOutList")
-//    @ApiOperation(value = "获取外卖参数列表", notes = "获取下单信息进行外卖下单")
-//    public ResultData getTakeOutList(String token, CartItem cartItem) {
-//        return iOrderApiService.getTakeOutList(token, cartItem);
-//    }
 
     /**
      * @param
@@ -88,5 +77,24 @@ public class OrderController extends BaseController {
         return failed();
     }
 
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 根据购物车商品进行添加到订单表中
+     * @date create in 2019/12/25 15:32
+     **/
+    @PostMapping("/insertOrder")
+    @ApiOperation(value = "进行下单", notes = "添加购物车商品到订单表中")
+    public ResultData insertOrder(String token, @RequestBody OrderVo orderVo) {
+        boolean b = iOrderApiService.insertOrder(token, orderVo);
+        if (b) {
+            return success();
+        } else {
+            return failed();
+        }
+
+    }
 
 }
