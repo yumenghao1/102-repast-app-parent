@@ -5,6 +5,7 @@ import com.aaa.lee.app.fallback.OrderFallback;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
 import com.aaa.lee.app.vo.TakeOutVo;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,10 +25,10 @@ import java.util.Map;
 public interface IOrderApiService {
 
     @PostMapping("/addProductToCart")
-    ResultData<CartItem> addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock") Long stock);
+    boolean addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem);
 
     @PostMapping("/reduceProductToCart")
-    ResultData reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem);
+    boolean reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem);
 
     @PostMapping("/cleanProductToCart")
     ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems, @RequestParam("status") Integer status);

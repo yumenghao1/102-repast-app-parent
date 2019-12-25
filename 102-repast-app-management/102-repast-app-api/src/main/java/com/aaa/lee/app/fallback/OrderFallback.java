@@ -4,7 +4,6 @@ import com.aaa.lee.app.api.IOrderApiService;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
-import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.vo.TakeOutVo;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -28,13 +27,15 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
     public IOrderApiService create(Throwable throwable) {
         return new IOrderApiService() {
             @Override
-            public ResultData addProductToCart(String token, CartItem cartItem, Long stock) {
-                return new ResultData().setMsg("添加购物车商品报错熔断成功").setCode(LoginStatus.LOGIN_FAILED.getCode());
+            public boolean addProductToCart(String token, CartItem cartItem) {
+                System.out.println("添加购物车商品报错熔断成功");
+                return false;
             }
 
             @Override
-            public ResultData reduceProductToCart(String token, CartItem cartItem) {
-                return new ResultData().setMsg("减少购物车商品报错熔断成功");
+            public boolean reduceProductToCart(String token, CartItem cartItem) {
+                System.out.println("减少购物车商品报错熔断成功");
+                return false;
             }
 
             @Override

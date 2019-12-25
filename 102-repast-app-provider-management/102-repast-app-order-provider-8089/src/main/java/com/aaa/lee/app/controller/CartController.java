@@ -1,5 +1,6 @@
 package com.aaa.lee.app.controller;
 
+import com.aaa.lee.app.api.IShopApiService;
 import com.aaa.lee.app.base.BaseController;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
@@ -20,19 +21,25 @@ public class CartController extends BaseController {
 
     @Autowired
     private CartService cartService;
+    @Autowired
+    private IShopApiService iShopApiService;
 
     /**
+     * @param
+     * @return
+     * @throws
      * @author YMH
-     * @description
-            增加购物车
-     * @param 
+     * @description 增加购物车
      * @date create in 2019/12/25 1:48
-     * @return 
-     * @throws 
      **/
     @PostMapping("/addProductToCart")
-    public ResultData<CartItem> addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem, @RequestParam("stock") Long stock) {
-        return cartService.addProductToCart(cartItem, stock);
+    public boolean addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem) {
+        try {
+            return cartService.addProductToCart(cartItem, iShopApiService);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -43,12 +50,12 @@ public class CartController extends BaseController {
      * @return
      */
     @PostMapping("/reduceProductToCart")
-    public ResultData reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem) {
-        ResultData resultData = cartService.reduceProductToCart(cartItem);
-        if (resultData.getCode().equals(StatusEnum.SUCCESS.getCode())) {
-            return super.success(resultData.getData(), StatusEnum.SUCCESS.getMsg());
-        } else {
-            return super.failed(StatusEnum.FAILED.getMsg());
+    public boolean reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem) {
+        try {
+            return cartService.reduceProductToCart(cartItem, iShopApiService);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

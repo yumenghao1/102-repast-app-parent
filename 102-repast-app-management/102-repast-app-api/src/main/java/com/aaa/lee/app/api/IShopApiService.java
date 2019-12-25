@@ -22,7 +22,7 @@ import java.util.List;
 public interface IShopApiService {
 
     /**
-     * @param [member]
+     * @param
      * @return
      * @throws
      * @author Seven Lee

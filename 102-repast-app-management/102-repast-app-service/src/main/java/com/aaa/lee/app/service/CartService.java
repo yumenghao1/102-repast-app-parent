@@ -1,13 +1,14 @@
 package com.aaa.lee.app.service;
 
+import com.aaa.lee.app.api.IShopApiService;
 import com.aaa.lee.app.base.BaseService;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.mapper.CartItemMapper;
 import com.aaa.lee.app.model.CartItem;
+import com.aaa.lee.app.staticproperties.StaticProperties;
 import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.status.StatusEnum;
 import com.aaa.lee.app.utils.DateUtil;
-import org.apache.commons.httpclient.util.DateParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,33 +47,68 @@ public class CartService extends BaseService<CartItem> {
      * @date create in 2019/12/25 1:25
      **/
     @Transactional(rollbackFor = Exception.class)
-    public ResultData<CartItem> addProductToCart(CartItem cartItem, Long stock) {
+    public boolean addProductToCart(CartItem cartItem, IShopApiService iShopApiService) {
+        // 受影响的行数
         int result = 0;
+        // 判断是否超时
         boolean istimeout = true;
+        // 进行更新库存的实体类
         CartItem newCartItem = new CartItem();
-        ResultData resultData = new ResultData();
-        if (stock > 0) {
-            // 进入这进行购物车加，库存减少，至于减多少，需要进行判断，该商品是锁定库存还是未锁定库存的商品，
-            //如果该商品已经锁定库存，就直接减1，如果该商品是未锁定的，就直接减去（已有的加上1）
-            newCartItem = findByProuct(cartItem.getMemberId(), cartItem.getProductId(), cartItem.getDeleteStatus());
-            if (null != newCartItem) {
-                // true就是锁定库存的
-                istimeout = isTimeout(cartItem);
-                result = cartItemMapper.updateByPrimaryKey(upDateCartItem(newCartItem, cartItem.getQuantity()));
-            } else {
-                result = cartItemMapper.insert(cartItem.setCreateDate(Timestamp.valueOf(DateUtil.getDateNow())));
-            }
-            if (result > 0) {
-                resultData.setCode(LoginStatus.LOGIN_SUCCESS.getCode()).setMsg(StatusEnum.SUCCESS.getMsg());
-                if (istimeout) {
-                    resultData.setData(cartItem);
-                } else {
-                    resultData.setData(newCartItem.setQuantity(newCartItem.getQuantity() + cartItem.getQuantity()));
-                }
-                return resultData;
-            }
+        // 参数不为空，将参数放入carItem
+        if (null != cartItem) {
+            newCartItem.setMemberId(cartItem.getMemberId());
+        } else {
+            return false;
         }
-        return resultData.setCode(LoginStatus.LOGIN_FAILED.getCode()).setMsg(StatusEnum.FAILED.getMsg());
+        try {
+            synchronized (this) {
+                // 查询库存
+                Long stock = iShopApiService.getProductStockById();
+                if (stock > 0) {
+                    // 进入这进行购物车加，库存减少，至于减多少，需要进行判断，该商品是锁定库存还是未锁定库存的商品，
+                    //如果该商品已经锁定库存，就直接减1，如果该商品是未锁定的，就直接减去（已有的加上1）
+                    newCartItem = findByProuct(cartItem.getMemberId(), cartItem.getProductId(), StaticProperties.NOT_DEL_STATUS);
+                    if (null != newCartItem) {
+                        // true就是锁定库存的
+                        istimeout = isTimeout(cartItem);
+                        result = update(upDateCartItem(newCartItem, cartItem.getQuantity()));
+                    } else {
+                        result = save(cartItem.setCreateDate(Timestamp.valueOf(DateUtil.getDateNow())));
+                    }
+                    if (result > 0) {
+                        ResultData resultData;
+                        if (istimeout) {
+                            // 添加（该新增商品是锁定库存的商品）和新增 都进入该方法,进行修改库存
+                            resultData = iShopApiService.updateProductStock(cartItem.getProductId(), cartItem.getQuantity());
+                        } else {
+                            // 添加进入该方法，商品为未锁定库存
+                            resultData = iShopApiService.updateProductStock(cartItem.getProductId(), cartItem.getQuantity() + newCartItem.getQuantity());
+                        }
+                        return updateStockStatus(resultData);
+                    }
+                }
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("添加购物车失败抛出异常");
+        }
+    }
+
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 修改状态
+     * @date create in 2019/12/25 12:50
+     **/
+    private boolean updateStockStatus(ResultData resultData) throws Exception {
+        if (null != resultData && resultData.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
+            return true;
+        } else {
+            throw new RuntimeException("添加购物车失败抛出异常");
+        }
     }
 
     /**
@@ -128,29 +164,43 @@ public class CartService extends BaseService<CartItem> {
      * @param cartItem
      * @return
      */
-    public ResultData reduceProductToCart(CartItem cartItem) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean reduceProductToCart(CartItem cartItem, IShopApiService shopApiService) {
         int count = 0;
-        boolean status = false;
-        ResultData resultData = new ResultData();
-        // 查询该商品的数量是否为1，如果为一，修改数量并逻辑删除和修改时间,前台必须传111111111111del
-        CartItem newCartItem = findByProuct(cartItem.getMemberId(), cartItem.getProductId(), cartItem.getDeleteStatus());
-        // 先判断查询到没有，在判断是否为超时商品，如果为超时商品不会在操控库存
-        if (null != newCartItem) {
-            status = isTimeout(newCartItem);
-            // 判断是否存在该商品在购物车的数量
-            if (newCartItem.getQuantity() <= cartItem.getQuantity()) {
-                // 修改数量和状态
-                count = cartItemMapper.updateByPrimaryKey(newCartItem.setQuantity(0).setDeleteStatus(Integer.valueOf(StatusEnum.FAILED.getCode())).setModifyDate(Timestamp.valueOf(DateUtil.getDateNow())));
-            } else {
-                // 修改数量
-                count = cartItemMapper.updateByPrimaryKey(upDateCartItem(newCartItem, -cartItem.getQuantity()));
+        boolean status = true;
+        try {
+            synchronized (this) {
+                // 查询该商品的数量是否为1，如果为一，修改数量并逻辑删除和修改时间,前台必须传1del
+                CartItem newCartItem = findByProuct(cartItem.getMemberId(), cartItem.getProductId(), cartItem.getDeleteStatus());
+                // 先判断查询到没有，在判断是否为超时商品，如果为超时商品不会在操控库存
+                if (null != newCartItem) {
+                    status = isTimeout(newCartItem);
+                    // 判断是否存在该商品在购物车的数量
+                    if (newCartItem.getQuantity() <= cartItem.getQuantity()) {
+                        // 修改数量和状态
+                        count = cartItemMapper.updateByPrimaryKey(
+                                newCartItem.setQuantity(StaticProperties.NO_STOCK)
+                                        .setDeleteStatus(StaticProperties.DEL_STATUS)
+                                        .setModifyDate(Timestamp.valueOf(DateUtil.getDateNow())));
+                    } else {
+                        // 修改数量
+                        count = cartItemMapper.updateByPrimaryKey(upDateCartItem(newCartItem, -cartItem.getQuantity()));
+                    }
+                    // 操作成功进行返回结果
+                    if (count > 0) {
+                        if (status) {
+                            return updateStockStatus(shopApiService.updateProductStock(cartItem.getProductId(), cartItem.getQuantity()));
+                        } else {
+                            return true;
+                        }
+                    }
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("购物车减少抛出异常");
         }
-        // 操作成功进行返回结果
-        if (count > 0) {
-            return resultData.setCode(StatusEnum.SUCCESS.getCode()).setMsg(StatusEnum.SUCCESS.getMsg()).setData(status);
-        }
-        return resultData.setCode(StatusEnum.FAILED.getCode());
+        return false;
     }
 
     /**

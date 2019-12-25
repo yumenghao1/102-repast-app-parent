@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 购物车order接口
- */
+ * @Company
+ * @Author YMH
+ * @Date Create in 2019/12/25 11:11
+ * @Description 购物车接口
+ **/
 @RestController
 @Api(value = "购物车", tags = "购物车服务接口")
 public class CartController extends BaseController {
@@ -28,19 +31,23 @@ public class CartController extends BaseController {
     private IShopApiService iShopApiService;
 
     /**
-     * @param token
-     * @param cartItem 商品id 店铺id 会员id
+     * @param token,cartItem
      * @return
-     */
+     * @throws
+     * @author YMH
+     * @description 添加购物车
+     * @date create in 2019/12/25 11:20
+     **/
     @PostMapping("/addProductToCart")
     @ApiOperation(value = "添加购物车", notes = "添加购物车并保存到购物车表，并对库存数量进行操作")
     public ResultData addProductToCart(String token, CartItem cartItem) {
-        ResultData<CartItem> cartItemResultData = iOrderApiService.addProductToCart(token, cartItem, iShopApiService.getProductStockById());
-        if (cartItemResultData.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
-            return checkProductStock(cartItemResultData.getData());
+        if (iOrderApiService.addProductToCart(token, cartItem)) {
+            return success();
         }
-        return super.failed(StatusEnum.FAILED.getMsg());
+        return failed();
+
     }
+
 
     /**
      * @param token
@@ -50,12 +57,11 @@ public class CartController extends BaseController {
     @PostMapping("/reduceProductToCart")
     @ApiOperation(value = "减少购物车", notes = "修改购物车内商品数量")
     public ResultData reduceProductToCart(String token, CartItem cartItem) {
-        ResultData reduceProduct = iOrderApiService.reduceProductToCart(token, cartItem);
-        // 为true是对购物车商品减少成功，在根据resultData来判断是否对库存进行操作
-        if (reduceProduct.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode()) && (boolean) reduceProduct.getData()) {
-            return checkProductStock(cartItem);
+        if (iOrderApiService.reduceProductToCart(token, cartItem)) {
+            return success();
         }
-        return super.failed(StatusEnum.FAILED.getMsg());
+        return failed();
+
     }
 
     /**
@@ -73,19 +79,6 @@ public class CartController extends BaseController {
             return iShopApiService.updateProductStock(cartItems);
         }
         return super.failed(StatusEnum.FAILED.getMsg());
-    }
-
-    /**
-     * 验证库存是否修改成功
-     * @param cartItem
-     * @return
-     */
-    private ResultData checkProductStock(CartItem cartItem) {
-        if (iShopApiService.updateProductStock(cartItem.getProductId(), cartItem.getQuantity()).getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
-            return super.success(StatusEnum.SUCCESS.getMsg());
-        } else {
-            return super.failed(StatusEnum.FAILED.getMsg());
-        }
     }
 
     /**
