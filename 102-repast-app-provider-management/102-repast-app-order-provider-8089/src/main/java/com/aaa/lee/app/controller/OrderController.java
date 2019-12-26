@@ -53,10 +53,10 @@ public class OrderController {
         return orderService.getProductAndCoupon(price, coupon);
     }
 
-    @PostMapping("/getTakeOutList")
-    public TakeOutVo getTakeOutList(@RequestParam("token") String token, @RequestBody CartItem cartItem) {
+    @PostMapping("/getOrderList")
+    public TakeOutVo getOrderList(@RequestParam("token") String token, @RequestParam("orderType")Integer orderType, @RequestBody CartItem cartItem) {
         try {
-            TakeOutVo takeOutVo = orderService.getTakeOutList(token, cartItem, cartService, repastServiceFegin, shopServiceFegin);
+            TakeOutVo takeOutVo = orderService.getOrderList(token, cartItem,orderType, cartService, repastServiceFegin, shopServiceFegin);
             if (null != takeOutVo) {
                 return takeOutVo;
             }

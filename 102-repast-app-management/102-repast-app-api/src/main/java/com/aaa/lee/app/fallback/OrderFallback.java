@@ -50,7 +50,7 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
             }
 
             @Override
-            public TakeOutVo getTakeOutList(String token, CartItem cartItem) {
+            public TakeOutVo getOrderList(String token, Integer orderType,CartItem cartItem) {
                 List<CartItem> cartItems = new ArrayList<>();
                 cartItems.add(new CartItem().setProductName("测试熔断失败"));
                 return new TakeOutVo().setCartItemList(cartItems);

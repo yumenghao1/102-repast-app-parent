@@ -20,4 +20,5 @@ public class TakeOutVo implements Serializable {
     private List<CartItem> cartItemList;
     private List<MemberReceiveAddress> memberReceiveAddressList;
     private List<Coupon> couponList;
+    private Integer orderType;
 }

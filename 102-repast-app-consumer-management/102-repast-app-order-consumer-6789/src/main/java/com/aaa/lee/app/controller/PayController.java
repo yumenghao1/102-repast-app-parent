@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -27,7 +28,7 @@ public class PayController extends BaseController {
     private IOrderApiService iOrderApiService;
     @Autowired
     private HttpServletRequest request;
-    @Autowired
+    @Resource
     private HttpServletResponse response;
 
     @PostMapping("/wxPay")
@@ -35,9 +36,9 @@ public class PayController extends BaseController {
     public ResultData wxPay(String token, String openid, String orderSn, Float amount) {
         Map<String, Object> map = iOrderApiService.wxPay(token, openid, orderSn, amount);
         if (null != map) {
-            success();
+            success(map,"支付成功");
         }
-        return failed();
+        return failed("支付失败");
     }
 
     @PostMapping("/wxNotify")

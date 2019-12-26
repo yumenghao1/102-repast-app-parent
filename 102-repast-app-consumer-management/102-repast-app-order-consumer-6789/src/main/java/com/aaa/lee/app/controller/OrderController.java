@@ -7,7 +7,6 @@ import com.aaa.lee.app.base.BaseController;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
-import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.vo.OrderVo;
 import com.aaa.lee.app.vo.TakeOutVo;
 import io.swagger.annotations.Api;
@@ -50,10 +49,10 @@ public class OrderController extends BaseController {
      * @description
      * @date create in 2019/12/25 0:32
      **/
-    @PostMapping("/getTakeOutList")
-    @ApiOperation(value = "获取外卖参数列表", notes = "获取下单信息进行外卖下单")
-    public ResultData getTakeOutList(String token, CartItem cartItem) {
-        TakeOutVo takeOutList = iOrderApiService.getTakeOutList(token, cartItem);
+    @PostMapping("/getOrderList")
+    @ApiOperation(value = "获取下单参数列表", notes = "获取下单信息进行下单")
+    public ResultData getOrderList(String token, CartItem cartItem, Integer orderType) {
+        TakeOutVo takeOutList = iOrderApiService.getOrderList(token, orderType, cartItem);
         if (null != takeOutList) {
             return success(takeOutList);
         }

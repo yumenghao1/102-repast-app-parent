@@ -78,8 +78,9 @@ public class OrderService extends BaseService<Order> {
      * @date create in 2019/12/24 23:39
      **/
     @Transactional(rollbackFor = Exception.class)
-    public TakeOutVo getTakeOutList(String token, CartItem cartItem, CartService cartService, IRepastService repastServiceFegin, IShopApiService shopServiceFegin) throws Exception {
+    public TakeOutVo getOrderList(String token, CartItem cartItem, Integer orderType, CartService cartService, IRepastService repastServiceFegin, IShopApiService shopServiceFegin) throws Exception {
         TakeOutVo takeOutVo = new TakeOutVo();
+        takeOutVo.setOrderType(orderType);
         // 数据为空直接返回
         if (null == cartItem) {
             return null;
@@ -95,14 +96,17 @@ public class OrderService extends BaseService<Order> {
                 takeOutVo.setCouponList(couponResultData.getData());
             }
         }
-        // 根据用户id查询个人的收货地址列表,即便调用失败也不影响下单
-        ResultData<List<MemberReceiveAddress>> adrResultData = repastServiceFegin.getAdrByMemberId(token, memberId);
-        if (null != adrResultData && adrResultData.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
-            if (null != adrResultData.getData()) {
-                takeOutVo.setMemberReceiveAddressList(adrResultData.getData());
+        // 如果是外卖拉取收货地址
+        if (orderType.equals(StaticProperties.TAKEOUT)) {
+            // 根据用户id查询个人的收货地址列表,即便调用失败也不影响下单
+            ResultData<List<MemberReceiveAddress>> adrResultData = repastServiceFegin.getAdrByMemberId(token, memberId);
+            if (null != adrResultData && adrResultData.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())) {
+                if (null != adrResultData.getData()) {
+                    takeOutVo.setMemberReceiveAddressList(adrResultData.getData());
+                }
+            } else {
+                throw GetTakeOutException;
             }
-        } else {
-            throw GetTakeOutException;
         }
         // 根据用户id,店铺id,拉去个人的还存在的购物车商品
         List<CartItem> cartItemList = cartService.getCartItemList(cartItem);
