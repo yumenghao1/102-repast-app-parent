@@ -12,7 +12,7 @@ public class DateUtil {
     /**
      * 日期类型 yyyy-MM-dd
      */
-    public final static String DATE_TYPE = "yyyy-MM-dd";
+    public final static String DATE_TYPE = "yyyy/MM/dd";
     /**
      * 日期时间类型 yyyy-MM-dd HH:mm:ss
      */

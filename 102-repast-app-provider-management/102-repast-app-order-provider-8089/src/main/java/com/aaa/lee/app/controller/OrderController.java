@@ -6,6 +6,7 @@ import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
 import com.aaa.lee.app.model.MemberReceiveAddress;
+import com.aaa.lee.app.model.Order;
 import com.aaa.lee.app.service.CartService;
 import com.aaa.lee.app.service.OrderItemService;
 import com.aaa.lee.app.service.OrderOperateHistoryService;
@@ -53,10 +54,18 @@ public class OrderController {
         return orderService.getProductAndCoupon(price, coupon);
     }
 
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 下单拉取购物车商品
+     * @date create in 2019/12/26 16:39
+     **/
     @PostMapping("/getOrderList")
-    public TakeOutVo getOrderList(@RequestParam("token") String token, @RequestParam("orderType")Integer orderType, @RequestBody CartItem cartItem) {
+    public TakeOutVo getOrderList(@RequestParam("token") String token, @RequestParam("orderType") Integer orderType, @RequestBody CartItem cartItem) {
         try {
-            TakeOutVo takeOutVo = orderService.getOrderList(token, cartItem,orderType, cartService, repastServiceFegin, shopServiceFegin);
+            TakeOutVo takeOutVo = orderService.getOrderList(token, cartItem, orderType, cartService, repastServiceFegin, shopServiceFegin);
             if (null != takeOutVo) {
                 return takeOutVo;
             }
@@ -67,6 +76,14 @@ public class OrderController {
         return null;
     }
 
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 下单
+     * @date create in 2019/12/26 16:40
+     **/
     @PostMapping("/insertOrder")
     public boolean insertOrder(@RequestParam("token") String token, @RequestBody OrderVo orderVo) {
         try {
@@ -76,5 +93,32 @@ public class OrderController {
             return false;
         }
     }
+
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 根据用户id查询所属订单列表
+     * @date create in 2019/12/26 16:46
+     **/
+    @PostMapping("/getOrderListByMemberId")
+    public List<Order> getOrderListByMemberId(@RequestParam("token") String token, @RequestParam("memberId") Long memberId,@RequestParam("status") Integer status) {
+        return orderService.getListOrderByMemberId(memberId,status);
+    }
+
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 根据订单编号查询所属订单
+     * @date create in 2019/12/26 16:46
+     **/
+    @PostMapping("/getOrderVoByOrderSn")
+    public OrderVo getOrderVoByOrderSn(@RequestParam("token") String token, @RequestParam("orderSn") String orderSn) {
+        return orderService.getOrderByOrderSn(orderSn,orderItemService);
+    }
+
 
 }

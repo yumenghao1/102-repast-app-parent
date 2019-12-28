@@ -7,6 +7,7 @@ import com.aaa.lee.app.base.BaseController;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
+import com.aaa.lee.app.model.Order;
 import com.aaa.lee.app.vo.OrderVo;
 import com.aaa.lee.app.vo.TakeOutVo;
 import io.swagger.annotations.Api;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 /**
@@ -94,6 +97,44 @@ public class OrderController extends BaseController {
             return failed();
         }
 
+    }
+
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 根据用户id查询所属订单列表
+     * @date create in 2019/12/26 16:46
+     **/
+    @PostMapping("/getOrderListByMemberId")
+    @ApiOperation(value = "根据用户id查询所属订单列表", notes = "根据用户id查询所属订单列表")
+    public ResultData getOrderListByMemberId(String token, Long memberId,Integer status) {
+        List<Order> orderListByMemberId = iOrderApiService.getOrderListByMemberId(token, memberId,status);
+        if (null != orderListByMemberId) {
+            return success(orderListByMemberId);
+        }
+        return failed();
+
+
+    }
+
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 根据订单编号查询所属订单
+     * @date create in 2019/12/26 16:46
+     **/
+    @PostMapping("/getOrderByOrderSn")
+    @ApiOperation(value = "根据订单编号查询所属订单", notes = "根据订单编号查询所属订单")
+    public ResultData getOrderByOrderSn(String token, String orderSn) {
+        OrderVo orderByOrderSn = iOrderApiService.getOrderVoByOrderSn(token, orderSn);
+        if (null != orderByOrderSn) {
+            return success(orderByOrderSn);
+        }
+        return failed();
     }
 
 }

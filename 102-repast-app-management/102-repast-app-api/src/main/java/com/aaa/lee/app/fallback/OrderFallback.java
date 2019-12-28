@@ -4,10 +4,13 @@ import com.aaa.lee.app.api.IOrderApiService;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
+import com.aaa.lee.app.model.Order;
+import com.aaa.lee.app.model.OrderReturnApply;
 import com.aaa.lee.app.vo.OrderVo;
 import com.aaa.lee.app.vo.TakeOutVo;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +74,22 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
             public boolean insertOrder(String token, OrderVo orderVo) {
                 return false;
             }
+
+            @Override
+            public List<Order> getOrderListByMemberId(String token, Long memberId, Integer status) {
+                return null;
+            }
+
+            @Override
+            public OrderVo getOrderVoByOrderSn(String token, String orderSn) {
+                return null;
+            }
+
+            @Override
+            public Integer addReturnApply(String token, String orderSn, String reason, MultipartFile[] files) {
+                return null;
+            }
+
 
             @Override
             public boolean test(String token) {

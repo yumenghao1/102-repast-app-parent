@@ -71,6 +71,19 @@
             <artifactId>jdom</artifactId>
             <version>1.1</version>
         </dependency>
+        <!-- ftp begin -->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+        </dependency>
+        <!-- ftp end -->
+        <!-- file upload -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+
+
     </dependencies>
 
 

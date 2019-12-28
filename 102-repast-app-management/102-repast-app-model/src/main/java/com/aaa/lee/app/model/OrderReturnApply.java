@@ -33,16 +33,10 @@ public class OrderReturnApply implements Serializable {
     private Long orderId;
 
     /**
-     * 收货地址表id
+     * 收货地址
      */
-    @Column(name = "company_address_id")
-    private Long companyAddressId;
-
-    /**
-     * 退货商品id
-     */
-    @Column(name = "product_id")
-    private Long productId;
+    @Column(name = "company_address")
+    private String companyAddress;
 
     /**
      * 订单编号
@@ -92,48 +86,6 @@ public class OrderReturnApply implements Serializable {
     private Date handleTime;
 
     /**
-     * 商品图片
-     */
-    @Column(name = "product_pic")
-    private String productPic;
-
-    /**
-     * 商品名称
-     */
-    @Column(name = "product_name")
-    private String productName;
-
-    /**
-     * 商品品牌
-     */
-    @Column(name = "product_brand")
-    private String productBrand;
-
-    /**
-     * 商品销售属性：颜色：红色；尺码：xl;
-     */
-    @Column(name = "product_attr")
-    private String productAttr;
-
-    /**
-     * 退货数量
-     */
-    @Column(name = "product_count")
-    private Integer productCount;
-
-    /**
-     * 商品单价
-     */
-    @Column(name = "product_price")
-    private BigDecimal productPrice;
-
-    /**
-     * 商品实际支付单价
-     */
-    @Column(name = "product_real_price")
-    private BigDecimal productRealPrice;
-
-    /**
      * 原因
      */
     private String reason;
@@ -178,6 +130,5 @@ public class OrderReturnApply implements Serializable {
      */
     @Column(name = "receive_note")
     private String receiveNote;
-
 
 }

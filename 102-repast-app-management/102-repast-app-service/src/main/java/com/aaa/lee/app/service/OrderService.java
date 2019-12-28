@@ -218,4 +218,51 @@ public class OrderService extends BaseService<Order> {
     }
 
 
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 个人用户 查询自己的所有订单
+     * @date create in 2019/12/26 16:29
+     **/
+    public List<Order> getListOrderByMemberId(Long memberId, Integer status) {
+        try {
+            Order order = new Order().setMemberId(memberId);
+            if (null != status) {
+                order.setStatus(status);
+            }
+            return super.selectByModeCondidation(order);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 根据订单号查询订单以及订单详情
+     *
+     * @param orderSn
+     * @return
+     */
+    public OrderVo getOrderByOrderSn(String orderSn, OrderItemService orderItemService) {
+        try {
+            Order order = super.selectByModel(new Order().setOrderSn(orderSn));
+            if (null != order && null != orderItemService) {
+                List<OrderItem> orderItems = orderItemService.selectByModeCondidation(new OrderItem().setOrderSn(orderSn));
+                if (null != orderItems) {
+                    return new OrderVo().setOrder(order).setOrderItemList(orderItems);
+                }
+            } else {
+                if (null != order) {
+                    return new OrderVo().setOrder(order);
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
