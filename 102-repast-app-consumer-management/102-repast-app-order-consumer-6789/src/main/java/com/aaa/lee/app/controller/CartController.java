@@ -1,5 +1,6 @@
 package com.aaa.lee.app.controller;
 
+import com.aaa.lee.app.annotation.TokenAnnocation;
 import com.aaa.lee.app.api.IOrderApiService;
 import com.aaa.lee.app.api.IShopApiService;
 import com.aaa.lee.app.base.BaseController;
@@ -40,6 +41,7 @@ public class CartController extends BaseController {
      **/
     @PostMapping("/addProductToCart")
     @ApiOperation(value = "添加购物车", notes = "添加购物车并保存到购物车表，并对库存数量进行操作")
+    @TokenAnnocation()
     public ResultData addProductToCart(String token, CartItem cartItem) {
         if (iOrderApiService.addProductToCart(token, cartItem)) {
             return success();
@@ -54,6 +56,7 @@ public class CartController extends BaseController {
      * @param cartItem 商品id 店铺id 会员id
      * @return
      */
+    @TokenAnnocation()
     @PostMapping("/reduceProductToCart")
     @ApiOperation(value = "减少购物车", notes = "修改购物车内商品数量")
     public ResultData reduceProductToCart(String token, CartItem cartItem) {
@@ -69,6 +72,7 @@ public class CartController extends BaseController {
      * @param
      * @return
      */
+    @TokenAnnocation()
     @PostMapping("/cleanProductToCart")
     @ApiOperation(value = "清空购物车", notes = "清空购物车")
     public ResultData cleanProductToCart(String token, @RequestBody List<CartItem> cartItems) {
@@ -88,6 +92,7 @@ public class CartController extends BaseController {
      * @param cartItem
      * @return
      */
+    @TokenAnnocation()
     @PostMapping("/getCartItemList")
     @ApiOperation(value = "获取购物车列表", notes = "获取购物车列表")
     public ResultData getCartItemList(String token, CartItem cartItem) {

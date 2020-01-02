@@ -1,5 +1,6 @@
 package com.aaa.lee.app.controller;
 
+import com.aaa.lee.app.annotation.TokenAnnocation;
 import com.aaa.lee.app.api.IShopApiService;
 import com.aaa.lee.app.base.BaseController;
 import com.aaa.lee.app.base.ResultData;
@@ -33,6 +34,7 @@ public class CartController extends BaseController {
      * @date create in 2019/12/25 1:48
      **/
     @PostMapping("/addProductToCart")
+    @TokenAnnocation()
     public boolean addProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem) {
         try {
             return cartService.addProductToCart(cartItem, iShopApiService);
@@ -50,6 +52,7 @@ public class CartController extends BaseController {
      * @return
      */
     @PostMapping("/reduceProductToCart")
+    @TokenAnnocation()
     public boolean reduceProductToCart(@RequestParam("token") String token, @RequestBody CartItem cartItem) {
         try {
             return cartService.reduceProductToCart(cartItem, iShopApiService);
@@ -70,6 +73,7 @@ public class CartController extends BaseController {
      * @return
      */
     @PostMapping("/cleanProductToCart")
+    @TokenAnnocation()
     public ResultData<List<CartItem>> cleanProductToCart(@RequestParam("token") String token, @RequestBody List<CartItem> cartItems, @RequestParam("status") Integer status) {
         ResultData<List<CartItem>> listResultData = cartService.cleanProductToCart(cartItems, status);
         System.out.println(listResultData.toString());
@@ -97,6 +101,7 @@ public class CartController extends BaseController {
      * @return
      */
     @PostMapping("/getCartItemList")
+    @TokenAnnocation()
     public ResultData<List<CartItem>> getCartItemList(@RequestParam("token") String token, @RequestBody CartItem cartItem) {
         List<CartItem> cartItemList = cartService.getCartItemList(cartItem);
         if (cartItemList.size() > 0) {

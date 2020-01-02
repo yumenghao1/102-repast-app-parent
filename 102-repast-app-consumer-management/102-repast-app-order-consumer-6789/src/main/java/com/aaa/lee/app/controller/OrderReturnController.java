@@ -1,5 +1,6 @@
 package com.aaa.lee.app.controller;
 
+import com.aaa.lee.app.annotation.TokenAnnocation;
 import com.aaa.lee.app.api.IOrderApiService;
 import com.aaa.lee.app.base.BaseController;
 import com.aaa.lee.app.base.ResultData;
@@ -34,6 +35,7 @@ public class OrderReturnController extends BaseController {
 //    @ApiImplicitParams({@ApiImplicitParam(name = "files", value = "多个文件，", paramType = "form", allowMultiple = true, required = true, dataType = "file")})
     @ApiOperation(value = "单个文件上传", notes = "单个文件上传")
     @PostMapping(value = "/addReturnApply", headers = "content-type=multipart/form-data")
+    @TokenAnnocation()
     public ResultData addReturnApply(String token, String orderSn, String reason, MultipartFile files, MultipartFile files1) {
         MultipartFile[] multipartFiles = new MultipartFile[2];
         multipartFiles[0] = files;

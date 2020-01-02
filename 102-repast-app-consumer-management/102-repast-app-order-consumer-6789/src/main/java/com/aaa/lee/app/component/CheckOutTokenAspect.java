@@ -7,6 +7,7 @@ import com.aaa.lee.app.model.Member;
 import com.aaa.lee.app.model.ShopInformation;
 import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -20,17 +21,21 @@ import org.springframework.stereotype.Component;
 /**
  * 验证token，判断用户是否登录
  */
+@Slf4j
 @Component
 @Aspect
 public class CheckOutTokenAspect {
 
-    /**
-     * 拦截本类中所有方法
-     */
-    @Pointcut("execution(public * com.aaa.lee.app.controller.*.*(..))")
+//    /**
+//     * 拦截本类中所有方法
+//     */
+//    @Pointcut("execution(public * com.aaa.lee.app.controller.*.*(..))")
+//    public void token() {
+//    }
+
+    @Pointcut("@annotation(com.aaa.lee.app.annotation.TokenAnnocation)")
     public void token() {
     }
-
     /**
      * 验证token，为空去登录，否则继续执行
      *
@@ -39,7 +44,6 @@ public class CheckOutTokenAspect {
      */
     @Around("token()")
     public Object doToken(ProceedingJoinPoint joinPoint) throws Throwable {
-
         if (joinPoint.getArgs() != null) {
             if (StringUtil.isNotEmpty((String) joinPoint.getArgs()[0])) {
                 return joinPoint.proceed();

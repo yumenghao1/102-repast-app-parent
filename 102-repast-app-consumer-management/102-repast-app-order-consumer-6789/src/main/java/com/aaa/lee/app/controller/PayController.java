@@ -1,6 +1,7 @@
 package com.aaa.lee.app.controller;
 
 import com.aaa.lee.app.Myconst.WXConst;
+import com.aaa.lee.app.annotation.TokenAnnocation;
 import com.aaa.lee.app.api.IOrderApiService;
 import com.aaa.lee.app.base.BaseController;
 import com.aaa.lee.app.base.ResultData;
@@ -33,6 +34,7 @@ public class PayController extends BaseController {
 
     @PostMapping("/wxPay")
     @ApiOperation(value = "微信支付", notes = "支付下单")
+    @TokenAnnocation()
     public ResultData wxPay(String token, String openid, String orderSn, Float amount) {
         Map<String, Object> map = iOrderApiService.wxPay(token, openid, orderSn, amount);
         if (null != map) {

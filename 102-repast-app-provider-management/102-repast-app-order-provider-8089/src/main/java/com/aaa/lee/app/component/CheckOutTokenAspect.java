@@ -3,6 +3,7 @@ package com.aaa.lee.app.component;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,12 +15,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Aspect
+@Slf4j
 public class CheckOutTokenAspect {
 
     /**
      * 拦截本类中所有方法
      */
-    @Pointcut("execution(public * com.aaa.lee.app.controller.*.*(..))")
+    @Pointcut("@annotation(com.aaa.lee.app.annotation.TokenAnnocation)")
     public void token() {
     }
 

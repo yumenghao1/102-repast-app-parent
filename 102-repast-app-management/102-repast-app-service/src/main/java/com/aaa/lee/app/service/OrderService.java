@@ -44,6 +44,7 @@ public class OrderService extends BaseService<Order> {
     @Autowired
     private OrderMapper orderMapper;
 
+
     @Override
     public Mapper<Order> getMapper() {
         return orderMapper;

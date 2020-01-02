@@ -1,5 +1,6 @@
 package com.aaa.lee.app.controller;
 
+import com.aaa.lee.app.annotation.TokenAnnocation;
 import com.aaa.lee.app.api.IRepastService;
 import com.aaa.lee.app.api.IShopApiService;
 import com.aaa.lee.app.base.ResultData;
@@ -49,6 +50,7 @@ public class OrderController {
      * @param coupon
      * @return
      */
+    @TokenAnnocation()
     @PostMapping("/getProductAndCoupon")
     public Integer getProductAndCoupon(@RequestParam("token") String token, @RequestParam("price") Integer price, @RequestBody Coupon coupon) {
         return orderService.getProductAndCoupon(price, coupon);
@@ -62,6 +64,7 @@ public class OrderController {
      * @description 下单拉取购物车商品
      * @date create in 2019/12/26 16:39
      **/
+    @TokenAnnocation()
     @PostMapping("/getOrderList")
     public TakeOutVo getOrderList(@RequestParam("token") String token, @RequestParam("orderType") Integer orderType, @RequestBody CartItem cartItem) {
         try {
@@ -84,6 +87,7 @@ public class OrderController {
      * @description 下单
      * @date create in 2019/12/26 16:40
      **/
+    @TokenAnnocation()
     @PostMapping("/insertOrder")
     public boolean insertOrder(@RequestParam("token") String token, @RequestBody OrderVo orderVo) {
         try {
@@ -102,6 +106,7 @@ public class OrderController {
      * @description 根据用户id查询所属订单列表
      * @date create in 2019/12/26 16:46
      **/
+    @TokenAnnocation()
     @PostMapping("/getOrderListByMemberId")
     public List<Order> getOrderListByMemberId(@RequestParam("token") String token, @RequestParam("memberId") Long memberId,@RequestParam("status") Integer status) {
         return orderService.getListOrderByMemberId(memberId,status);
@@ -115,6 +120,7 @@ public class OrderController {
      * @description 根据订单编号查询所属订单
      * @date create in 2019/12/26 16:46
      **/
+    @TokenAnnocation()
     @PostMapping("/getOrderVoByOrderSn")
     public OrderVo getOrderVoByOrderSn(@RequestParam("token") String token, @RequestParam("orderSn") String orderSn) {
         return orderService.getOrderByOrderSn(orderSn,orderItemService);
