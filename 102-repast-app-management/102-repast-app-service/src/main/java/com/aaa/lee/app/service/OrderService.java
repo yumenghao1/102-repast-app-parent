@@ -14,6 +14,7 @@ import com.aaa.lee.app.utils.DateUtil;
 import com.aaa.lee.app.utils.IDUtil;
 import com.aaa.lee.app.utils.PayUtil;
 import com.aaa.lee.app.utils.StringUtil;
+import com.aaa.lee.app.vo.MessageVo;
 import com.aaa.lee.app.vo.OrderVo;
 import com.aaa.lee.app.vo.TakeOutVo;
 import com.github.wxpay.sdk.WXPayUtil;
@@ -138,7 +139,7 @@ public class OrderService extends BaseService<Order> {
      * @date create in 2019/12/25 15:43
      **/
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertOrder(OrderVo orderVo, OrderItemService orderItemService, OrderOperateHistoryService orderOperateHistoryService) {
+    public boolean insertOrder(OrderVo orderVo, OrderItemService orderItemService, OrderOperateHistoryService orderOperateHistoryService,DelaySendMsgService delaySendMsgService) {
         try {
             boolean b = true;
             Order order = orderVo.getOrder();
@@ -204,6 +205,10 @@ public class OrderService extends BaseService<Order> {
                             .setShopId(order.getShopId()).setNote(order.getNote());
                     Integer result = orderOperateHistoryService.save(orderOperateHistory);
                     if (result > 0) {
+                        MessageVo messageVo = new MessageVo();
+                        messageVo.setOrderSn(order.getOrderSn());
+                        messageVo.setMillis("30");
+                        delaySendMsgService.sendDelayMsg(messageVo);
                         return true;
                     }
                 }

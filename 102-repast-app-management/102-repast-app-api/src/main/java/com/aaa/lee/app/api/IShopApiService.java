@@ -39,5 +39,5 @@ public interface IShopApiService {
     ResultData updateProductStock(@RequestParam("productId") Long productId, @RequestParam("stock") Integer stock);
 
     @PostMapping("/updateProductStock")
-    ResultData updateProductStock(@RequestBody List<CartItem> cartItems);
+    ResultData updateProductStock(@RequestBody List t);
 }

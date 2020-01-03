@@ -33,7 +33,7 @@ public class OrderReturnController extends BaseController {
      * @date create in 2019/12/27 13:35
      **/
 //    @ApiImplicitParams({@ApiImplicitParam(name = "files", value = "多个文件，", paramType = "form", allowMultiple = true, required = true, dataType = "file")})
-    @ApiOperation(value = "单个文件上传", notes = "单个文件上传")
+    @ApiOperation(value = "多个文件上传", notes = "多个文件上传")
     @PostMapping(value = "/addReturnApply", headers = "content-type=multipart/form-data")
     @TokenAnnocation()
     public ResultData addReturnApply(String token, String orderSn, String reason, MultipartFile files, MultipartFile files1) {

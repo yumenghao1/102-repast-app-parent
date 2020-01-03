@@ -23,7 +23,6 @@ import tk.mybatis.spring.annotation.MapperScan;
 @MapperScan("com.aaa.lee.app.mapper")
 @EnableFeignClients(basePackages = {"com.aaa.lee.app"})
 public class ApplicationRun8089 {
-
     public static void main(String[] args) {
         SpringApplication.run(ApplicationRun8089.class, args);
     }

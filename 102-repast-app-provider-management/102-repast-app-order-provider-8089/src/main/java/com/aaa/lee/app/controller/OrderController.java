@@ -8,10 +8,7 @@ import com.aaa.lee.app.model.CartItem;
 import com.aaa.lee.app.model.Coupon;
 import com.aaa.lee.app.model.MemberReceiveAddress;
 import com.aaa.lee.app.model.Order;
-import com.aaa.lee.app.service.CartService;
-import com.aaa.lee.app.service.OrderItemService;
-import com.aaa.lee.app.service.OrderOperateHistoryService;
-import com.aaa.lee.app.service.OrderService;
+import com.aaa.lee.app.service.*;
 import com.aaa.lee.app.status.LoginStatus;
 import com.aaa.lee.app.status.StatusEnum;
 import com.aaa.lee.app.vo.OrderVo;
@@ -41,6 +38,9 @@ public class OrderController {
     private OrderItemService orderItemService;
     @Autowired
     private OrderOperateHistoryService orderOperateHistoryService;
+
+    @Autowired
+    private DelaySendMsgService sendMsgService;
 
     /**
      * 获取价格和优惠券计算价格
@@ -91,7 +91,7 @@ public class OrderController {
     @PostMapping("/insertOrder")
     public boolean insertOrder(@RequestParam("token") String token, @RequestBody OrderVo orderVo) {
         try {
-            return orderService.insertOrder(orderVo, orderItemService, orderOperateHistoryService);
+            return orderService.insertOrder(orderVo, orderItemService, orderOperateHistoryService, sendMsgService);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -108,8 +108,8 @@ public class OrderController {
      **/
     @TokenAnnocation()
     @PostMapping("/getOrderListByMemberId")
-    public List<Order> getOrderListByMemberId(@RequestParam("token") String token, @RequestParam("memberId") Long memberId,@RequestParam("status") Integer status) {
-        return orderService.getListOrderByMemberId(memberId,status);
+    public List<Order> getOrderListByMemberId(@RequestParam("token") String token, @RequestParam("memberId") Long memberId, @RequestParam("status") Integer status) {
+        return orderService.getListOrderByMemberId(memberId, status);
     }
 
     /**
@@ -123,7 +123,7 @@ public class OrderController {
     @TokenAnnocation()
     @PostMapping("/getOrderVoByOrderSn")
     public OrderVo getOrderVoByOrderSn(@RequestParam("token") String token, @RequestParam("orderSn") String orderSn) {
-        return orderService.getOrderByOrderSn(orderSn,orderItemService);
+        return orderService.getOrderByOrderSn(orderSn, orderItemService);
     }
 
 

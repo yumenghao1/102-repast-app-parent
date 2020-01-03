@@ -73,7 +73,7 @@ public class CartService extends BaseService<CartItem> {
                         istimeout = isTimeout(cartItem);
                         result = update(upDateCartItem(newCartItem, cartItem.getQuantity()));
                     } else {
-                        result = save(cartItem.setCreateDate(Timestamp.valueOf(DateUtil.getDateNow())));
+                        result = save(cartItem.setCreateDate(Timestamp.valueOf(DateUtil.getDateNow())).setModifyDate(Timestamp.valueOf(DateUtil.getDateNow())));
                     }
                     if (result > 0) {
                         ResultData resultData;
