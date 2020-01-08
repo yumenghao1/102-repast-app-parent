@@ -1,5 +1,6 @@
 package com.aaa.lee.app.api;
 
+import com.aaa.lee.app.annotation.TokenAnnocation;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.fallback.OrderFallback;
 import com.aaa.lee.app.model.CartItem;
@@ -77,5 +78,7 @@ public interface IOrderApiService {
     // 提交退货申请
     @PostMapping(value = "/addReturnApply", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     Integer addReturnApply(@RequestParam("token") String token, @RequestParam("orderSn") String orderSn, @RequestParam("reason") String reason, @RequestPart("files") MultipartFile[] files);
-
+    // 确认收货
+    @PostMapping("/affirmOrder")
+    boolean affirmOrder(@RequestParam("token") String token,@RequestParam("orderSn")  String orderSn) ;
 }

@@ -90,6 +90,11 @@ public class OrderFallback implements FallbackFactory<IOrderApiService> {
                 return null;
             }
 
+            @Override
+            public boolean affirmOrder(String token, String orderSn) {
+                return false;
+            }
+
 
             @Override
             public boolean test(String token) {

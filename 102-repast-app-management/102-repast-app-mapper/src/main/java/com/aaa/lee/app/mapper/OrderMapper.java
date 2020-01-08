@@ -6,4 +6,5 @@ import tk.mybatis.mapper.common.Mapper;
 
 @Repository
 public interface OrderMapper extends Mapper<Order> {
+    int affirmOrder(String orderSn);
 }

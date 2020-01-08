@@ -15,10 +15,7 @@ import com.aaa.lee.app.vo.TakeOutVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -57,7 +54,7 @@ public class OrderController extends BaseController {
      * @date create in 2019/12/25 0:32
      **/
     @PostMapping("/getOrderList")
-    @ApiOperation(value = "获取下单参数列表", notes = "获取下单信息进行下单")
+    @ApiOperation(value = "获取下单参数列表", notes = "获取下单信息进行下单，ordertype是判断该单是哪种类型订单")
     @TokenAnnocation()
     public ResultData getOrderList(String token, CartItem cartItem, Integer orderType) {
         TakeOutVo takeOutList = iOrderApiService.getOrderList(token, orderType, cartItem);
@@ -145,5 +142,23 @@ public class OrderController extends BaseController {
         }
         return failed();
     }
-
+    /**
+     * @author YMH
+     * @description
+    确定收货
+     * @param
+     * @date create in 2020/1/8 19:48
+     * @return
+     * @throws
+     **/
+    @TokenAnnocation()
+    @PostMapping("/affirmOrder")
+    @ApiOperation(value = "确认收货", notes = "根据订单编号手动收货")
+    public ResultData affirmOrder(@RequestParam("token") String token, String orderSn) {
+        boolean i = iOrderApiService.affirmOrder(token,orderSn);
+       if (i){
+           return super.success("操作成功");
+       }
+        return failed("操作失败");
+    }
 }

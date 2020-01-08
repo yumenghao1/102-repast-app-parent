@@ -15,7 +15,7 @@ public class DelaySendMsgService {
    /**
     * @author YMH
     * @description
-           最后将消息发送到队列
+           最后将待付款的订单消息发送到队列
     * @param
     * @date create in 2020/1/4 2:03
     * @return 
@@ -27,5 +27,19 @@ public class DelaySendMsgService {
             return message;
         });
     }
-
+    /**
+     * @author YMH
+     * @description
+    最后将待付款的订单消息发送到队列
+     * @param
+     * @date create in 2020/1/4 2:03
+     * @return
+     * @throws
+     **/
+    public void sendAffirmMsg(MessageVo msg) {
+        rabbitTemplate.convertAndSend(RabbitConfig.AFFIRM_EXCHANGE, RabbitConfig.AFFIRM_KEY, msg, message -> {
+            message.getMessageProperties().setExpiration(msg.getMillis());
+            return message;
+        });
+    }
 }

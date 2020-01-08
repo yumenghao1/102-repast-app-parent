@@ -126,5 +126,24 @@ public class OrderController {
         return orderService.getOrderByOrderSn(orderSn, orderItemService);
     }
 
+    /**
+     * @author YMH
+     * @description
+            确定收货
+     * @param
+     * @date create in 2020/1/8 19:48
+     * @return
+     * @throws 
+     **/
+    @TokenAnnocation()
+    @PostMapping("/affirmOrder")
+    public boolean affirmOrder(@RequestParam("token") String token,@RequestParam("orderSn") String orderSn) {
+        int i = orderService.affirmOrder(orderSn);
+        if (i > 0) {
+            return true;
+        }
+        return false;
+    }
+
 
 }

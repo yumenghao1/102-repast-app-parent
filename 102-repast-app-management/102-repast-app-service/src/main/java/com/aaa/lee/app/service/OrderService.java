@@ -139,7 +139,7 @@ public class OrderService extends BaseService<Order> {
      * @date create in 2019/12/25 15:43
      **/
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertOrder(OrderVo orderVo, OrderItemService orderItemService, OrderOperateHistoryService orderOperateHistoryService,DelaySendMsgService delaySendMsgService) {
+    public boolean insertOrder(OrderVo orderVo, OrderItemService orderItemService, OrderOperateHistoryService orderOperateHistoryService, DelaySendMsgService delaySendMsgService) {
         try {
             boolean b = true;
             Order order = orderVo.getOrder();
@@ -207,7 +207,7 @@ public class OrderService extends BaseService<Order> {
                     if (result > 0) {
                         MessageVo messageVo = new MessageVo();
                         messageVo.setOrderSn(order.getOrderSn());
-                        messageVo.setMillis("30");
+                        messageVo.setMillis("30000");
                         delaySendMsgService.sendDelayMsg(messageVo);
                         return true;
                     }
@@ -271,4 +271,15 @@ public class OrderService extends BaseService<Order> {
         }
     }
 
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author YMH
+     * @description 确认收货
+     * @date create in 2020/1/8 19:53
+     **/
+    public int affirmOrder(String orderSn) {
+        return orderMapper.affirmOrder(orderSn);
+    }
 }

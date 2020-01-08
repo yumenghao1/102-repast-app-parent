@@ -1,6 +1,5 @@
 package com.aaa.lee.app.component;
 
-import com.aaa.lee.app.api.IOrderApiService;
 import com.aaa.lee.app.api.IShopApiService;
 import com.aaa.lee.app.base.ResultData;
 import com.aaa.lee.app.model.Order;
@@ -17,8 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@RabbitListener(queues = "process_queue")
-public class OrderDelayConsumer {
+@RabbitListener(queues = "affirm_process_queue")
+public class OrderAffirmConsumer {
 
     @Autowired
     private OrderService orderService;
@@ -30,30 +29,22 @@ public class OrderDelayConsumer {
     @Transactional(rollbackFor = Exception.class)
     @RabbitHandler
     public void orderConsumer(MessageVo msg) throws Exception {
-        System.out.println("该订单已经到预定时间，时间为");
+        System.out.println("该订单已经到自动收货时间，时间为7天");
         try {
             // 获取消息队列中消息拿出订单SN
             String orderSn = msg.getOrderSn();
             // 根据sn查询该订单
             OrderVo orderByOrderSn = orderService.getOrderByOrderSn(orderSn, orderItemService);
-            // 该订单的状态如果为待付款则取消订单，因为超过规定时间
+            // 该订单的状态是否为退货成功的订单
             Order order = orderByOrderSn.getOrder();
-            if (order.getStatus().equals(StaticProperties.NO_PAY)) {
-                // 修改订单状态
-                order.setStatus(StaticProperties.INVALID);
-                Integer update = orderService.update(order);
-                if (update > 0) {
-                    ResultData resultData = shopApiService.updateProductStock(orderByOrderSn.getOrderItemList());
-                    if (resultData.getCode().equals(LoginStatus.LOGIN_SUCCESS.getCode())){}else {
-                        throw new Exception("库存出现异常");
-                    }
-                }
+            if (order.getStatus().equals(StaticProperties.INVALID)) {
+                return;
             }
-
+            order.setStatus(StaticProperties.INVALID);
+            orderService.update(order);
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("消息队列出现异常");
         }
-
     }
 }
